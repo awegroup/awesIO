@@ -1,10 +1,18 @@
+<p align="left">
+  <img src="docs/logo/Final%20logo%20awesIO.svg" alt="awesIO Logo" width="200">
+</p>
+
 # awesIO
 
 Input/output standard for airborne wind energy systems.
 
 awesIO provides JSON Schema-based validation for AWE system configurations and was developed in the context of IEA Wind Task 48. The terminology/ontology used follows the Airborne Wind Europe Glossary: https://airbornewindeurope.org/glossary-2
 
-Documentation: https://awegroup.github.io/awesIO/
+<p align="left">
+  <a href="https://awegroup.github.io/awesIO/">
+    <img src="https://img.shields.io/badge/📖_Documentation-View_Docs-blue?style=for-the-badge" alt="Documentation">
+  </a>
+</p>
 
 
 
@@ -86,4 +94,4 @@ pip install -e .
 pip install -r docs/requirements.txt
 ```
 
-For the developer guide check: https://awegroup.github.io/awesIO/developer_guide
+
