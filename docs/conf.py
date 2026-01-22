@@ -61,6 +61,9 @@ master_doc = "index"
 # -- Options for HTML output -------------------------------------------------
 html_theme = "furo"
 
+# Logo configuration - appears on top left of all pages
+html_logo = "logo/Final logo awesIO.svg"
+
 # Theme options for furo
 html_theme_options = {
     "navigation_with_keys": True,
