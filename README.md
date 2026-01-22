@@ -25,35 +25,24 @@ Currently includes schemas for:
 - Operational constraints
 
 
-## Installation
-
-### Installation using pixi and git
-
-Install pixi: https://github.com/prefix-dev/pixi?tab=readme-ov-file#installation
-
-Fetch the latest version from git:
-```bash
-git clone https://github.com/awegroup/awesIO
-cd awesIO
-```
-Run the default validation:
-```bash
-pixi run validate
-```
-This will install all of the required Python packages and validate the example files against the included schema files.
-
-### Install Directly from Git Repository using pip
+## Installation for users using pip and pixi
 
 Install the latest version from the main branch without cloning:
 
 ```bash
 pip install git+https://github.com/awegroup/awesIO.git
+
+pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git"
+
 ```
 
 Install from a specific branch:
 
 ```bash
 pip install git+https://github.com/awegroup/awesIO.git@branch-name
+
+pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@branch-name"
+
 ```
 
 Install from a specific commit or tag:
@@ -61,13 +50,9 @@ Install from a specific commit or tag:
 ```bash
 pip install git+https://github.com/awegroup/awesIO.git@commit-hash
 pip install git+https://github.com/awegroup/awesIO.git@v0.1.0
-```
 
-**Using in a Conda environment:**
-
-```bash
-conda activate your_environment
-pip install git+https://github.com/awegroup/awesIO.git
+pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@commit-hash"
+pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@v0.1.0"
 ```
 
 ## Usage
@@ -81,17 +66,37 @@ from awesio.validator import validate
 data = validate("path/to/config.yml")
 ```
 
-## Examples
+## Installation for developers
 
-Example YAML configuration files are available in the `examples/` directory.
-
-### Developers
-
-Clone the repo, then install dev dependencies:
+Fetch the latest version from git:
+```bash
+git clone https://github.com/awegroup/awesIO
+cd awesIO
+```
+### pip
 
 ```bash
 pip install -e .
 pip install -r docs/requirements.txt
 ```
 
+### pixi
+Run the default validation:
+```bash
+pixi run validate
+```
+This will install all of the required Python packages and validate the example files against the included schema files.
 
+## Examples
+
+Example YAML configuration files are available in the `examples/` directory.
+
+## Contributing
+
+Please check the developer guide in the documentation:
+
+<p align="left">
+  <a href="https://awegroup.github.io/awesIO/developer_guide">
+    <img src="https://img.shields.io/badge/👨‍💻_Developer_Guide-Contribute-green?style=for-the-badge" alt="Developer Guide">
+  </a>
+</p>

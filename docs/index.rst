@@ -65,19 +65,59 @@ Getting Started
 Installation
 ------------
 
-Install awesIO directly from the git repository:
+Install using pip
+~~~~~~~~~~~~~~~~~
+
+Install the latest version from the main branch:
 
 .. code-block:: bash
 
    pip install git+https://github.com/awegroup/awesIO.git
 
-Or clone and install in development mode:
+Install from a specific branch, commit, or tag:
+
+.. code-block:: bash
+
+   pip install git+https://github.com/awegroup/awesIO.git@branch-name
+   pip install git+https://github.com/awegroup/awesIO.git@commit-hash
+   pip install git+https://github.com/awegroup/awesIO.git@v0.1.0
+
+Install using pixi
+~~~~~~~~~~~~~~~~~~
+
+Install the latest version:
+
+.. code-block:: bash
+
+   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git"
+
+Install from a specific branch, commit, or tag:
+
+.. code-block:: bash
+
+   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@branch-name"
+   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@commit-hash"
+   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@v0.1.0"
+
+For developers
+~~~~~~~~~~~~~~
+
+Clone and install in development mode:
 
 .. code-block:: bash
 
    git clone https://github.com/awegroup/awesIO.git
    cd awesIO
    pip install -e .
+   pip install -r docs/requirements.txt
+
+Or use pixi:
+
+.. code-block:: bash
+
+   git clone https://github.com/awegroup/awesIO.git
+   cd awesIO
+   pixi run validate
 
 Quick Example
 -------------

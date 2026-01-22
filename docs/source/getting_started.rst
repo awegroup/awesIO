@@ -15,12 +15,14 @@ Prerequisites
 Install
 =======
 
-Install directly from the repository:
+Install using pip
+-----------------
+
+Install the latest version from the main branch:
 
 .. code-block:: bash
 
    pip install git+https://github.com/awegroup/awesIO.git
-
 
 Install from a specific branch:
 
@@ -29,10 +31,33 @@ Install from a specific branch:
    pip install git+https://github.com/awegroup/awesIO.git@branch-name
 
 Install from a specific commit or tag:
+
 .. code-block:: bash
 
    pip install git+https://github.com/awegroup/awesIO.git@commit-hash
    pip install git+https://github.com/awegroup/awesIO.git@v0.1.0
+
+Install using pixi
+------------------
+
+Install the latest version:
+
+.. code-block:: bash
+
+   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git"
+
+Install from a specific branch:
+
+.. code-block:: bash
+
+   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@branch-name"
+
+Install from a specific commit or tag:
+
+.. code-block:: bash
+
+   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@commit-hash"
+   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@v0.1.0"
 
 Validate a YAML file
 ====================
