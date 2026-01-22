@@ -96,7 +96,7 @@ Example YAML configuration files are available in the `examples/` directory.
 Please check the developer guide in the documentation:
 
 <p align="left">
-  <a href="https://awegroup.github.io/awesIO/developer_guide">
+  <a href="https://awegroup.github.io/awesIO/source/developer_guide.html">
     <img src="https://img.shields.io/badge/👨‍💻_Developer_Guide-Contribute-green?style=for-the-badge" alt="Developer Guide">
   </a>
 </p>
