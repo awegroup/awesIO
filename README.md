@@ -19,7 +19,22 @@ Currently includes schemas for:
 
 ## Installation
 
-### Install Directly from Git Repository (Recommended for Users)
+### Installation using pixi and git
+
+Install pixi: https://github.com/prefix-dev/pixi?tab=readme-ov-file#installation
+
+Fetch the latest version from git:
+```bash
+git clone https://github.com/awegroup/awesIO
+cd awesIO
+```
+Run the default validation:
+```bash
+pixi run validate
+```
+This will install all of the required Python packages and validate the example files against the included schema files.
+
+### Install Directly from Git Repository using pip
 
 Install the latest version from the main branch without cloning:
 

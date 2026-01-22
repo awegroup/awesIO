@@ -1,0 +1,22 @@
+[workspace]
+name = "awesio"
+version = "0.1.0"
+description = "Input/Output standard for airborne wind energy systems"
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+
+[tasks]
+test = "pytest tests/"
+validate = "python scripts/validate_yaml.py"
+
+[dependencies]
+python = ">=3.8"
+numpy = "*"
+"ruamel.yaml" = "*"
+netcdf4 = "*"
+xarray = "*"
+jsonschema = "*"
+referencing = "*"
+pip = "*"
+pytest = ">=7.0"
+pytest-cov = "*"
