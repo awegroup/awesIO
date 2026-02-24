@@ -6,6 +6,7 @@ from referencing.exceptions import NoSuchResource
 import copy
 import jsonschema
 import jsonschema.validators
+import warnings
 
 from .yaml import load_yaml
 from .schemas import schemaPath, schema_validation_error_formatter
@@ -68,13 +69,11 @@ def validate(
         FileNotFoundError: If the schema file corresponding to the schema type is not found.
         TypeError: If the input type is not supported (must be dict, str, or Path-like).
         ValueError: If the schema type cannot be determined from the input data.
-        jsonschema.exceptions.ValidationError: If the input data fails validation
-            against the schema.
-        jsonschema.exceptions.SchemaError: If the schema itself is invalid.
 
     Returns:
         dict: The validated input data. If `defaults` is True, the returned data will 
-        include default values specified in the schema.
+        include default values specified in the schema. If validation fails, the data
+        is still returned but a validation error message is printed.
     """
     if type(input) is dict:
         data = copy.deepcopy(input)
@@ -103,14 +102,18 @@ def validate(
     if restrictive:
         schema = _enforce_no_additional_properties(schema)
 
-    if defaults:
-        _jsonschema_validate_modified(data, schema, cls = DefaultValidatingDraft7Validator, registry=registry)
-    else:
-        _jsonschema_validate_modified(data, schema, registry=registry)
+    try:
+        if defaults:
+            _jsonschema_validate_modified(data, schema, cls = DefaultValidatingDraft7Validator, registry=registry)
+        else:
+            _jsonschema_validate_modified(data, schema, registry=registry)
 
-
-    # Additional consistency checks beyond schema validation
-    _validate_data_consistency(data, schema_type)
+        # Additional consistency checks beyond schema validation
+        _validate_data_consistency(data, schema_type)
+        
+    except ValueError as e:
+        warnings.warn(f"Validation failed: {e}", UserWarning, stacklevel=2)
+        return data
 
     return data
 

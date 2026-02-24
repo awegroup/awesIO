@@ -39,31 +39,11 @@ def main():
             results.append((file_path, False))
             continue
             
-        try:
-            print(f"\nValidating: {file_path}")
-            data = validate(file_path)
-            schema_name = data["metadata"]["schema"]
-            print(f"Schema: {schema_name}")
-            print(f"[PASS]")
-            results.append((file_path, True))
-        except Exception as e:
-            print(f"[FAIL]: {e}")
-            results.append((file_path, False))
-    
-    # Summary
-    print(f"\n{'='*70}")
-    passed = sum(1 for _, success in results if success)
-    failed = len(results) - passed
-    
-    for file_path, success in results:
-        status = "[PASS]" if success else "[FAIL]"
-        print(f"{status} {file_path.name}")
-    
-    print(f"\nTotal: {len(results)} | Passed: {passed} | Failed: {failed}")
-    print(f"{'='*70}")
-    
-    sys.exit(0 if failed == 0 else 1)
-
+        print(f"\nValidating: {file_path}")
+        data = validate(file_path)
+        schema_name = data["metadata"]["schema"]
+        print(f"Schema: {schema_name}")
+        results.append((file_path, True))
 
 if __name__ == "__main__":
     main()

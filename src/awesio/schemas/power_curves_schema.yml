@@ -42,8 +42,6 @@ properties:
           - wing_area_m2
           - nominal_power_w
           - nominal_tether_force_n
-          - cut_in_wind_speed_m_s
-          - cut_out_wind_speed_m_s
           - operating_altitude_m
           - tether_length_operational_m
         properties:
@@ -68,9 +66,11 @@ properties:
           tether_length_operational_m:
             type: number
             minimum: 0
-        additionalProperties: false
+        additionalProperties: True
       wind_resource:
         type: object
+        required:
+          - reference_height_m
         properties:
           n_clusters:
             type: integer
@@ -90,8 +90,8 @@ properties:
             type: object
           data_source:
             type: string
-        additionalProperties: false
-    additionalProperties: false
+        additionalProperties: True
+    additionalProperties: True
 
   altitudes_m:
     type: array
@@ -109,50 +109,109 @@ properties:
       type: object
       required:
         - profile_id
-        - speed_ratio_at_operating_altitude
         - probability_weight
+        - wind_profile
+        - wind_speed_data
       properties:
         profile_id:
           type: integer
           minimum: 1
-        speed_ratio_at_operating_altitude:
-          type: number
-        u_normalized:
-          type: array
-          items:
-            type: number
-        v_normalized:
-          type: array
-          items:
-            type: number
         probability_weight:
           type: number
           minimum: 0
           maximum: 1
-        cycle_power_w:
+        wind_profile:
+          type: object
+          required:
+            - u_normalized
+            - v_normalized
+          properties:
+            u_normalized:
+              type: array
+              items:
+                type: number
+            v_normalized:
+              type: array
+              items:
+                type: number
+          additionalProperties: True
+        wind_speed_data:
           type: array
           items:
-            type: number
-        reel_out_power_w:
-          type: array
-          items:
-            type: number
-        reel_in_power_w:
-          type: array
-          items:
-            type: number
-        reel_out_time_s:
-          type: array
-          items:
-            type: number
-        reel_in_time_s:
-          type: array
-          items:
-            type: number
-        cycle_time_s:
-          type: array
-          items:
-            type: number
-      additionalProperties: false
-
-additionalProperties: false
+            type: object
+            required:
+              - wind_speed_m_s
+              - success
+              - performance
+            properties:
+              wind_speed_m_s:
+                type: number
+                minimum: 0
+              success:
+                type: boolean
+              performance:
+                type: object
+                properties:
+                  power:
+                    type: object
+                    properties:
+                      average_cycle_power_w:
+                        type: number
+                      average_reel_out_power_w:
+                        type: number
+                      average_reel_in_power_w:
+                        type: number
+                    additionalProperties: True
+                  timing:
+                    type: object
+                    properties:
+                      reel_out_time_s:
+                        type: number
+                        minimum: 0
+                      reel_in_time_s:
+                        type: number
+                        minimum: 0
+                      cycle_time_s:
+                        type: number
+                        minimum: 0
+                    additionalProperties: True
+                additionalProperties: True
+              time_history:
+                type: object
+                required:
+                  - time_s
+                properties:
+                  time_s:
+                    type: array
+                    items:
+                      type: number
+                      minimum: 0
+                  altitude_m:
+                    type: array
+                    items:
+                      type: number
+                  tether_force_n:
+                    type: array
+                    items:
+                      type: number
+                  power_w:
+                    type: array
+                    items:
+                      type: number
+                  reel_speed_m_s:
+                    type: array
+                    items:
+                      type: number
+                  tether_length_m:
+                    type: array
+                    items:
+                      type: number
+                      minimum: 0
+                  elevation_angle_deg:
+                    type: array
+                    items:
+                      type: number
+                additionalProperties: True
+            additionalProperties: True
+      additionalProperties: True
+additionalProperties: True

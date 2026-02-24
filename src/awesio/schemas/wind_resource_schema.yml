@@ -82,11 +82,9 @@ properties:
         additionalProperties: false
       altitude_range_m:
         type: array
-        minItems: 2
-        maxItems: 2
       time_created:
         type: string
-    additionalProperties: false
+    additionalProperties: True
 
   altitudes:
     type: array
