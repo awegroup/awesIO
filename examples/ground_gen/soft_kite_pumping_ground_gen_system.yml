@@ -12,87 +12,6 @@ components:
     name: example_soft_kite_wing
     type: LEI_soft_kite
     version: 1.0
-    aerodynamics:
-      simple_aero_model: # Parameters for simple models
-        lift_coefficient_reel_out: 1.2
-        drag_coefficient_reel_out: 0.05
-        lift_coefficient_reel_in: 0.8
-        drag_coefficient_reel_in: 0.1
-      lift_polynomial:
-      drag_polynomial:
-      wing_airfoils:
-        # ---------------------------------------------------------------':
-        # headers:':
-        #   - airfoil_id: integer, unique identifier for the airfoil':
-        #   - type: one of [neuralfoil, breukels_regression, masure_regression, polars]':
-        #   - info_dict: dictionary with parameters depending on ''type''':
-        #':
-        # info_dict fields by type:':
-        #   - breukels_regression:':
-        #       t: Tube diameter non-dimensionalized by chord (required)':
-        #       kappa: Maximum camber height/magnitude, non-dimensionalized by chord (required)':
-        #   - neuralfoil:':
-        #       dat_file_path: Path to airfoil .dat file (x, y columns)':
-        #       model_size: NeuralFoil model size (e.g., "xxxlarge")':
-        #       xtr_lower: Lower transition location (0=forced, 1=free)':
-        #       xtr_upper: Upper transition location':
-        #       n_crit: Critical amplification factor (see guidelines below)':
-        #         n_crit guidelines:':
-        #           Sailplane:           12–14':
-        #           Motorglider:         11–13':
-        #           Clean wind tunnel:   10–12':
-        #           Average wind tunnel: 9   (standard "e^9 method")':
-        #           Dirty wind tunnel:   4–8':
-        #   - polars:':
-        #       csv_file_path: Path to polar CSV file (columns: alpha [rad], cl, cd, cm)':
-        #   - masure_regression:':
-        #       t, eta, kappa, delta, lambda, phi: Regression parameters':
-        #   - inviscid:':
-        #       no further data is required':
-        alpha_range: [-10, 31, 0.5]
-        reynolds: 1000000.0
-        headers: [airfoil_id, type, info_dict]
-        data:
-        - [1, masure_regression, {dat_file_path: profiles/prof_1.dat, t: 0.077, eta: 0.175,
-            kappa: 0.095, delta: 7.236, lambda: 0.1, phi: 0.65, chord: 2.629, is_strut: false}]
-        - [2, masure_regression, {dat_file_path: profiles/prof_2.dat, t: 0.077, eta: 0.175,
-            kappa: 0.094, delta: 7.19, lambda: 0.1, phi: 0.65, chord: 2.616, is_strut: true}]
-        - [3, masure_regression, {dat_file_path: profiles/prof_3.dat, t: 0.077, eta: 0.175,
-            kappa: 0.093, delta: 7.099, lambda: 0.1, phi: 0.65, chord: 2.589, is_strut: false}]
-        - [4, masure_regression, {dat_file_path: profiles/prof_4.dat, t: 0.077, eta: 0.175,
-            kappa: 0.091, delta: 6.96, lambda: 0.1, phi: 0.65, chord: 2.548, is_strut: false}]
-        - [5, masure_regression, {dat_file_path: profiles/prof_5.dat, t: 0.078, eta: 0.175,
-            kappa: 0.089, delta: 6.773, lambda: 0.1, phi: 0.65, chord: 2.494, is_strut: true}]
-        - [6, masure_regression, {dat_file_path: profiles/prof_6.dat, t: 0.078, eta: 0.175,
-            kappa: 0.086, delta: 6.536, lambda: 0.1, phi: 0.65, chord: 2.425, is_strut: false}]
-        - [7, masure_regression, {dat_file_path: profiles/prof_7.dat, t: 0.079, eta: 0.175,
-            kappa: 0.082, delta: 6.246, lambda: 0.1, phi: 0.65, chord: 2.341, is_strut: false}]
-        - [8, masure_regression, {dat_file_path: profiles/prof_8.dat, t: 0.079, eta: 0.175,
-            kappa: 0.077, delta: 5.898, lambda: 0.1, phi: 0.65, chord: 2.24, is_strut: true}]
-        - [9, masure_regression, {dat_file_path: profiles/prof_9.dat, t: 0.08, eta: 0.175,
-            kappa: 0.072, delta: 5.486, lambda: 0.1, phi: 0.65, chord: 2.121, is_strut: false}]
-        - [10, masure_regression, {dat_file_path: profiles/prof_10.dat, t: 0.082, eta: 0.175,
-            kappa: 0.066, delta: 4.998, lambda: 0.1, phi: 0.65, chord: 1.98, is_strut: false}]
-        - [11, masure_regression, {dat_file_path: profiles/prof_11.dat, t: 0.088, eta: 0.175,
-            kappa: 0.058, delta: 4.413, lambda: 0.1, phi: 0.65, chord: 1.721, is_strut: true}]
-        - [12, masure_regression, {dat_file_path: profiles/prof_12.dat, t: 0.087, eta: 0.156,
-            kappa: 0.056, delta: 4.129, lambda: 0.1, phi: 0.65, chord: 1.62, is_strut: false}]
-        - [13, masure_regression, {dat_file_path: profiles/prof_13.dat, t: 0.086, eta: 0.136,
-            kappa: 0.053, delta: 3.844, lambda: 0.1, phi: 0.65, chord: 1.474, is_strut: false}]
-        - [14, masure_regression, {dat_file_path: profiles/prof_14.dat, t: 0.085, eta: 0.117,
-            kappa: 0.051, delta: 3.559, lambda: 0.1, phi: 0.65, chord: 1.295, is_strut: false}]
-        - [15, masure_regression, {dat_file_path: profiles/prof_15.dat, t: 0.084, eta: 0.098,
-            kappa: 0.048, delta: 3.274, lambda: 0.1, phi: 0.65, chord: 1.088, is_strut: false}]
-        - [16, masure_regression, {dat_file_path: profiles/prof_16.dat, t: 0.083, eta: 0.078,
-            kappa: 0.046, delta: 2.989, lambda: 0.1, phi: 0.65, chord: 0.86, is_strut: false}]
-        - [17, masure_regression, {dat_file_path: profiles/prof_17.dat, t: 0.082, eta: 0.059,
-            kappa: 0.043, delta: 2.704, lambda: 0.1, phi: 0.65, chord: 0.613, is_strut: false}]
-        - [18, masure_regression, {dat_file_path: profiles/prof_18.dat, t: 0.081, eta: 0.04,
-            kappa: 0.041, delta: 2.419, lambda: 0.1, phi: 0.65, chord: 0.349, is_strut: false}]
-        - [19, masure_regression, {dat_file_path: profiles/prof_19.dat, t: 0.081, eta: 0.04,
-            kappa: 0.041, delta: 2.419, lambda: 0.1, phi: 0.65, chord: 1.385, is_strut: false}]
-        - [20, masure_regression, {dat_file_path: profiles/prof_20.dat, t: 0.081, eta: 0.04,
-            kappa: 0.041, delta: 2.419, lambda: 0.1, phi: 0.65, chord: 1.385, is_strut: false}]
     structure:
       projected_surface_area_m2: 60.0
       span_m: 18.0
@@ -192,7 +111,6 @@ components:
     name: example_soft_kite_bridle
     type: LEI_soft_kite_bridle 
     version: 1.0
-    aerodynamics:
     structure:
       mass_kg: 1.0
       bridle_nodes:
@@ -393,8 +311,6 @@ components:
     name: example_kite_control_unit
     type: kite_control_unit
     version: 1.0
-    aerodynamics:
-      drag_coefficient: 1.0
     structure:
       mass_kg: 4.0
       frontal_area_m2: 0.5
@@ -407,8 +323,6 @@ components:
     name: example_ground_gen_tether
     type: non_conductive_tether
     version: 1.0
-    aerodynamics:
-      drag_coefficient: 1.0
     structure:
       length_m: 400.0
       diameter_m: 0.014

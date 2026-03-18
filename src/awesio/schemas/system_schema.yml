@@ -89,38 +89,6 @@ definitions:
         enum: [LEI_soft_kite, ram_air_soft_kite, fixed_wing_aircraft]
       version:
         type: [string, number]
-      aerodynamics:
-        type: object
-        properties:
-          simple_aero_model:
-            type: object
-            properties:
-              lift_coefficient_reel_out:
-                type: number
-              drag_coefficient_reel_out:
-                type: number
-              lift_coefficient_reel_in:
-                type: number
-              drag_coefficient_reel_in:
-                type: number
-            additionalProperties: true
-          lift_polynomial:
-            type: ["null", array]
-          drag_polynomial:
-            type: ["null", array]
-          wing_airfoils:
-            type: object
-            properties:
-              alpha_range:
-                type: array
-              reynolds:
-                type: number
-              headers:
-                type: array
-              data:
-                type: array
-            additionalProperties: true
-        additionalProperties: true
       structure:
         type: object
     allOf:
@@ -239,48 +207,6 @@ definitions:
                 material:
                   type: object
               additionalProperties: true
-      
-      # Rigid wing - same as fixed_wing
-      - if:
-          properties:
-            type:
-              const: rigid_wing
-        then:
-          properties:
-            structure:
-              type: object
-              required:
-                - wing_area_m2
-                - span_m
-                - aspect_ratio
-                - mass_kg
-              properties:
-                wing_area_m2:
-                  type: number
-                  minimum: 0
-                span_m:
-                  type: number
-                  minimum: 0
-                aspect_ratio:
-                  type: number
-                  minimum: 0
-                mass_kg:
-                  type: number
-                  minimum: 0
-                chord_m:
-                  type: number
-                  minimum: 0
-                taper_ratio:
-                  type: number
-                dihedral_angle_deg:
-                  type: number
-                sweep_angle_deg:
-                  type: number
-                wing_sections:
-                  type: object
-                material:
-                  type: object
-              additionalProperties: true
     additionalProperties: false
 
   # ============================================================================
@@ -301,8 +227,6 @@ definitions:
         enum: [LEI_soft_kite_bridle]
       version:
         type: [string, number]
-      aerodynamics:
-        type: ["null", object]
       structure:
         type: object
         required:
@@ -340,12 +264,6 @@ definitions:
         enum: [kite_control_unit]
       version:
         type: [string, number]
-      aerodynamics:
-        type: object
-        properties:
-          drag_coefficient:
-            type: number
-        additionalProperties: true
       structure:
         type: object
         required:
@@ -394,12 +312,6 @@ definitions:
         enum: [non_conductive_tether, conductive_tether]
       version:
         type: [string, number]
-      aerodynamics:
-        type: object
-        properties:
-          drag_coefficient:
-            type: number
-        additionalProperties: false
       structure:
         type: object
     allOf:
