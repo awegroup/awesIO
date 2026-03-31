@@ -324,10 +324,6 @@ definitions:
               type: object
               required:
                 - length
-                - diameter
-                - density
-                - max_tether_force
-                - conductive
               properties:
                 length:
                   type: number
@@ -373,10 +369,6 @@ definitions:
               type: object
               required:
                 - length
-                - diameter
-                - density
-                - max_tether_force
-                - conductive
               properties:
                 length:
                   type: number
@@ -462,8 +454,6 @@ definitions:
               type: object
               required:
                 - type
-                - max_tether_speed
-                - max_tether_force
               properties:
                 type:
                   type: string
@@ -488,7 +478,6 @@ definitions:
               type: object
               required:
                 - type
-                - rated_power
               properties:
                 type:
                   type: string
@@ -514,7 +503,6 @@ definitions:
               type: object
               required:
                 - type
-                - gear_ratio
               properties:
                 type:
                   type: string
@@ -531,7 +519,6 @@ definitions:
               type: object
               required:
                 - type
-                - capacity
               properties:
                 type:
                   type: string
