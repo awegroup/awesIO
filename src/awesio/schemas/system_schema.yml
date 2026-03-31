@@ -103,8 +103,6 @@ definitions:
               type: object
               required:
                 - projected_surface_area
-                - span
-                - aspect_ratio
                 - mass
               properties:
                 projected_surface_area:
