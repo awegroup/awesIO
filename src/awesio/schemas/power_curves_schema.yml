@@ -38,6 +38,7 @@ properties:
         type: string
       model_config:
         type: object
+        additionalProperties: True
       wind_resource:
         type: object
         required:
