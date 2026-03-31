@@ -38,13 +38,13 @@ properties:
   wind_envelope:
     type: object
     properties:
-      cut_in_wind_speed_m_s:
+      cut_in_wind_speed:
         type: number
         minimum: 0
-      rated_wind_speed_m_s:
+      rated_wind_speed:
         type: number
         minimum: 0
-      cut_out_wind_speed_m_s:
+      cut_out_wind_speed:
         type: number
         minimum: 0
       max_turbulence_intensity:
@@ -67,9 +67,9 @@ properties:
         type: object
       flight_path_radius:
         type: object
-      max_bank_angle_deg:
+      max_bank_angle:
         type: number
-      max_acceleration_g:
+      max_acceleration:
         type: number
       stall_margin:
         type: number
@@ -78,15 +78,15 @@ properties:
   tether_constraints:
     type: object
     properties:
-      max_tether_force_n:
+      max_tether_force:
         type: number
         minimum: 0
-      min_tether_force_n:
+      min_tether_force:
         type: number
         minimum: 0
       tether_length:
         type: object
-      max_tether_speed_m_s:
+      max_tether_speed:
         type: number
         minimum: 0
     additionalProperties: false
@@ -102,13 +102,13 @@ properties:
         type: object
       reel_in_force:
         type: object
-      min_cycle_time_s:
+      min_cycle_time:
         type: number
         minimum: 0
-      max_cycle_time_s:
+      max_cycle_time:
         type: number
         minimum: 0
-      transition_time_s:
+      transition_time:
         type: number
         minimum: 0
       pattern_constraints:
@@ -118,16 +118,16 @@ properties:
   turbine_constraints:
     type: object
     properties:
-      min_rotor_speed_rpm:
+      min_rotor_speed:
         type: number
         minimum: 0
-      max_rotor_speed_rpm:
+      max_rotor_speed:
         type: number
         minimum: 0
-      rated_rotor_speed_rpm:
+      rated_rotor_speed:
         type: number
         minimum: 0
-      max_tip_speed_m_s:
+      max_tip_speed:
         type: number
         minimum: 0
     additionalProperties: false
@@ -135,13 +135,13 @@ properties:
   electrical_constraints:
     type: object
     properties:
-      max_current_a:
+      max_current:
         type: number
         minimum: 0
-      max_voltage_v:
+      max_voltage:
         type: number
         minimum: 0
-      max_power_kw:
+      max_power:
         type: number
         minimum: 0
     additionalProperties: false
@@ -149,16 +149,16 @@ properties:
   safety_constraints:
     type: object
     properties:
-      min_ground_clearance_m:
+      min_ground_clearance:
         type: number
         minimum: 0
-      exclusion_zone_radius_m:
+      exclusion_zone_radius:
         type: number
         minimum: 0
-      max_flight_duration_h:
+      max_flight_duration:
         type: number
         minimum: 0
-      emergency_landing_speed_m_s:
+      emergency_landing_speed:
         type: number
         minimum: 0
     additionalProperties: false
@@ -166,10 +166,10 @@ properties:
   airspace_constraints:
     type: object
     properties:
-      max_altitude_agl_m:
+      max_altitude_agl:
         type: number
         minimum: 0
-      max_altitude_msl_m:
+      max_altitude_msl:
         type: number
         minimum: 0
       restricted_zones:
@@ -192,17 +192,17 @@ properties:
         items:
           type: object
           required:
-            - azimuth_range_deg
+            - azimuth_range
             - flight_allowed
           properties:
-            azimuth_range_deg:
+            azimuth_range:
               type: array
               minItems: 2
               maxItems: 2
               items:
                 type: number
                 minimum: 0
-                maximum: 360
+                maximum: 6.283185307179586
             flight_allowed:
               type: boolean
             distance_restrictions:
@@ -210,17 +210,17 @@ properties:
               items:
                 type: object
                 required:
-                  - distance_range_m
-                  - min_height_agl_m
+                  - distance_range
+                  - min_height_agl
                 properties:
-                  distance_range_m:
+                  distance_range:
                     type: array
                     minItems: 2
                     maxItems: 2
                     items:
                       type: number
                       minimum: 0
-                  min_height_agl_m:
+                  min_height_agl:
                     type: number
                     minimum: 0
                 additionalProperties: false

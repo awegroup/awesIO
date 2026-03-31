@@ -102,21 +102,21 @@ definitions:
             structure:
               type: object
               required:
-                - projected_surface_area_m2
-                - span_m
+                - projected_surface_area
+                - span
                 - aspect_ratio
-                - mass_kg
+                - mass
               properties:
-                projected_surface_area_m2:
+                projected_surface_area:
                   type: number
                   minimum: 0
-                span_m:
+                span:
                   type: number
                   minimum: 0
                 aspect_ratio:
                   type: number
                   minimum: 0
-                mass_kg:
+                mass:
                   type: number
                   minimum: 0
                 flattening_factor:
@@ -139,21 +139,21 @@ definitions:
             structure:
               type: object
               required:
-                - projected_surface_area_m2
-                - span_m
+                - projected_surface_area
+                - span
                 - aspect_ratio
-                - mass_kg
+                - mass
               properties:
-                projected_surface_area_m2:
+                projected_surface_area:
                   type: number
                   minimum: 0
-                span_m:
+                span:
                   type: number
                   minimum: 0
                 aspect_ratio:
                   type: number
                   minimum: 0
-                mass_kg:
+                mass:
                   type: number
                   minimum: 0
                 flattening_factor:
@@ -176,31 +176,31 @@ definitions:
             structure:
               type: object
               required:
-                - wing_area_m2
-                - span_m
+                - wing_area
+                - span
                 - aspect_ratio
-                - mass_kg
+                - mass
               properties:
-                wing_area_m2:
+                wing_area:
                   type: number
                   minimum: 0
-                span_m:
+                span:
                   type: number
                   minimum: 0
                 aspect_ratio:
                   type: number
                   minimum: 0
-                mass_kg:
+                mass:
                   type: number
                   minimum: 0
-                chord_m:
+                chord:
                   type: number
                   minimum: 0
                 taper_ratio:
                   type: number
-                dihedral_angle_deg:
+                dihedral_angle:
                   type: number
-                sweep_angle_deg:
+                sweep_angle:
                   type: number
                 wing_sections:
                   type: object
@@ -230,9 +230,9 @@ definitions:
       structure:
         type: object
         required:
-          - mass_kg
+          - mass
         properties:
-          mass_kg:
+          mass:
             type: number
             minimum: 0
           bridle_nodes:
@@ -267,28 +267,28 @@ definitions:
       structure:
         type: object
         required:
-          - mass_kg
+          - mass
         properties:
-          mass_kg:
+          mass:
             type: number
             minimum: 0
-          frontal_area_m2:
+          frontal_area:
             type: number
             minimum: 0
         additionalProperties: true
       actuators:
         type: object
         properties:
-          max_steering_line_speed_m_s:
+          max_steering_line_speed:
             type: number
             minimum: 0
-          max_depower_line_speed_m_s:
+          max_depower_line_speed:
             type: number
             minimum: 0
-          max_steering_actuator_force_n:
+          max_steering_actuator_force:
             type: number
             minimum: 0
-          max_depower_actuator_force_n:
+          max_depower_actuator_force:
             type: number
             minimum: 0
         additionalProperties: true
@@ -325,22 +325,22 @@ definitions:
             structure:
               type: object
               required:
-                - length_m
-                - diameter_m
-                - density_kg_m3
-                - max_tether_force_n
+                - length
+                - diameter
+                - density
+                - max_tether_force
                 - conductive
               properties:
-                length_m:
+                length:
                   type: number
                   minimum: 0
-                diameter_m:
+                diameter:
                   type: number
                   minimum: 0
-                density_kg_m3:
+                density:
                   type: number
                   minimum: 0
-                max_tether_force_n:
+                max_tether_force:
                   type: number
                   minimum: 0
                 conductive:
@@ -350,13 +350,13 @@ definitions:
                   properties:
                     type:
                       type: string
-                    youngs_modulus_pa:
+                    youngs_modulus:
                       type: number
-                    breaking_strength_n:
+                    breaking_strength:
                       type: number
-                    min_breaking_strength_n:
+                    min_breaking_strength:
                       type: number
-                    shear_modulus_pa:
+                    shear_modulus:
                       type: number
                     breaking_strain:
                       type: number
@@ -374,22 +374,22 @@ definitions:
             structure:
               type: object
               required:
-                - length_m
-                - diameter_m
-                - density_kg_m3
-                - max_tether_force_n
+                - length
+                - diameter
+                - density
+                - max_tether_force
                 - conductive
               properties:
-                length_m:
+                length:
                   type: number
                   minimum: 0
-                diameter_m:
+                diameter:
                   type: number
                   minimum: 0
-                density_kg_m3:
+                density:
                   type: number
                   minimum: 0
-                max_tether_force_n:
+                max_tether_force:
                   type: number
                   minimum: 0
                 conductive:
@@ -399,13 +399,13 @@ definitions:
                   properties:
                     type:
                       type: string
-                    youngs_modulus_pa:
+                    youngs_modulus:
                       type: number
-                    breaking_strength_n:
+                    breaking_strength:
                       type: number
-                    min_breaking_strength_n:
+                    min_breaking_strength:
                       type: number
-                    shear_modulus_pa:
+                    shear_modulus:
                       type: number
                     breaking_strain:
                       type: number
@@ -435,15 +435,12 @@ definitions:
       structure:
         type: object
         required:
-          - mass_kg
+          - mass
         properties:
-          mass_kg:
+          mass:
             type: number
             minimum: 0
-          footprint_m2:
-            type: number
-            minimum: 0
-          height_m:
+          height:
             type: number
             minimum: 0
         additionalProperties: false
@@ -467,25 +464,25 @@ definitions:
               type: object
               required:
                 - type
-                - max_tether_speed_m_s
-                - max_tether_force_n
+                - max_tether_speed
+                - max_tether_force
               properties:
                 type:
                   type: string
                   const: electric_winch
-                max_tether_speed_m_s:
+                max_tether_speed:
                   type: number
                   minimum: 0
-                max_tether_force_n:
+                max_tether_force:
                   type: number
                   minimum: 0
-                max_winch_acceleration_m_s2:
+                max_winch_acceleration:
                   type: number
                   minimum: 0
-                drum_diameter_m:
+                drum_diameter:
                   type: number
                   minimum: 0
-                drum_width_m:
+                drum_width:
                   type: number
                   minimum: 0
               additionalProperties: false
@@ -493,25 +490,25 @@ definitions:
               type: object
               required:
                 - type
-                - rated_power_kw
+                - rated_power
               properties:
                 type:
                   type: string
                   enum: [permanent_magnet_synchronous, induction, dc]
-                rated_power_kw:
+                rated_power:
                   type: number
                   minimum: 0
-                max_power_kw:
+                max_power:
                   type: number
                   minimum: 0
-                rated_speed_rpm:
+                rated_speed:
                   type: number
                   minimum: 0
                 efficiency:
                   type: number
                   minimum: 0
                   maximum: 1
-                voltage_v:
+                voltage:
                   type: number
                   minimum: 0
               additionalProperties: false
@@ -536,18 +533,18 @@ definitions:
               type: object
               required:
                 - type
-                - capacity_kwh
+                - capacity
               properties:
                 type:
                   type: string
                   enum: [battery_bank, flywheel, capacitor_bank]
-                capacity_kwh:
+                capacity:
                   type: number
                   minimum: 0
-                max_charge_rate_kw:
+                max_charge_rate:
                   type: number
                   minimum: 0
-                max_discharge_rate_kw:
+                max_discharge_rate:
                   type: number
                   minimum: 0
                 efficiency:

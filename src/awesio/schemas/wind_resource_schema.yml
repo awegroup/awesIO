@@ -21,7 +21,7 @@ properties:
       - awesIO_version
       - schema
       - n_clusters
-      - reference_height_m
+      - reference_height
       - data_source
       - time_created
     properties:
@@ -45,16 +45,16 @@ properties:
       n_wind_direction_bins:
         type: integer
         minimum: 1
-      wind_direction_bin_width_deg:
+      wind_direction_bin_width:
         type: number
         minimum: 0
-      reference_height_m:
+      reference_height:
         type: number
         minimum: 0
       total_samples:
         type: integer
         minimum: 1
-      wind_speed_range_m_s:
+      wind_speed_range:
         type: array
         minItems: 2
         maxItems: 2
@@ -80,7 +80,7 @@ properties:
           months_included:
             type: [string, array]
         additionalProperties: false
-      altitude_range_m:
+      altitude_range:
         type: array
       time_created:
         type: string
@@ -94,11 +94,11 @@ properties:
   wind_speed_bins:
     type: object
     properties:
-      bin_edges_m_s:
+      bin_edges:
         type: array
         items:
           type: number
-      bin_centers_m_s:
+      bin_centers:
         type: array
         items:
           type: number
@@ -107,11 +107,11 @@ properties:
   wind_direction_bins:
     type: object
     properties:
-      bin_edges_deg:
+      bin_edges:
         type: array
         items:
           type: number
-      bin_centers_deg:
+      bin_centers:
         type: array
         items:
           type: number
@@ -136,15 +136,15 @@ properties:
           type: number
           minimum: 0
           maximum: 1
-        u_ref_mean_m_s:
+        u_ref_mean:
           type: number
           minimum: 0
-        u_ref_std_m_s:
+        u_ref_std:
           type: number
           minimum: 0
-        v_ref_mean_m_s:
+        v_ref_mean:
           type: number
-        v_ref_std_m_s:
+        v_ref_std:
           type: number
           minimum: 0
         u_normalized:

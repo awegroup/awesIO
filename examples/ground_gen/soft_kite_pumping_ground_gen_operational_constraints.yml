@@ -6,32 +6,32 @@ metadata:
   schema: operational_constraints_schema.yml
 
 airspace_constraints:
-  max_altitude_agl_m: 500.0
-  max_altitude_msl_m: 600.0
+  max_altitude_agl: 500.0
+  max_altitude_msl: 600.0
 terrain_constraints:
-  description: Minimum height restrictions by azimuth zone and distance from ground station center. Azimuth reference True north (0deg)
+  description: Minimum height restrictions by azimuth zone and distance from ground station center. Azimuth reference True north (0 rad)
   azimuth_zones:
-    - azimuth_range_deg: [0, 40]
+    - azimuth_range: [0.0, 0.6981317007977318]
       flight_allowed: true
       distance_restrictions:
-        - distance_range_m: [0, 10]
-          min_height_agl_m: 0
-        - distance_range_m: [10, 50]
-          min_height_agl_m: 70
-        - distance_range_m: [50, 200]
-          min_height_agl_m: 100
-        - distance_range_m: [200, 500]
-          min_height_agl_m: 150
-    - azimuth_range_deg: [40, 75]  # 40-45 degrees (example with building obstruction)
+        - distance_range: [0, 10]
+          min_height_agl: 0
+        - distance_range: [10, 50]
+          min_height_agl: 70
+        - distance_range: [50, 200]
+          min_height_agl: 100
+        - distance_range: [200, 500]
+          min_height_agl: 150
+    - azimuth_range: [0.6981317007977318, 1.3089969389957472]  # ~40-75 degrees in radians
       flight_allowed: false
-    - azimuth_range_deg: [75, 360]
+    - azimuth_range: [1.3089969389957472, 6.283185307179586]
       flight_allowed: true
       distance_restrictions:
-        - distance_range_m: [0, 10]
-          min_height_agl_m: 0
-        - distance_range_m: [10, 50]
-          min_height_agl_m: 70
-        - distance_range_m: [50, 200]
-          min_height_agl_m: 100
-        - distance_range_m: [200, 500]
-          min_height_agl_m: 150
+        - distance_range: [0, 10]
+          min_height_agl: 0
+        - distance_range: [10, 50]
+          min_height_agl: 70
+        - distance_range: [50, 200]
+          min_height_agl: 100
+        - distance_range: [200, 500]
+          min_height_agl: 150
