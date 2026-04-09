@@ -144,48 +144,19 @@ properties:
                         minimum: 0
                     additionalProperties: True
                 additionalProperties: True
-              time_history:
-                type: object
-                required:
-                  - time
-                  - altitude
-                  - tether_force
-                  - power
-                  - reel_speed
-                  - tether_length
-                  - elevation_angle
-                properties:
-                  time:
-                    type: array
-                    items:
-                      type: number
-                      minimum: 0
-                  altitude:
-                    type: array
-                    items:
-                      type: number
-                  tether_force:
-                    type: array
-                    items:
-                      type: number
-                  power:
-                    type: array
-                    items:
-                      type: number
-                  reel_speed:
-                    type: array
-                    items:
-                      type: number
-                  tether_length:
-                    type: array
-                    items:
-                      type: number
-                      minimum: 0
-                  elevation_angle: # Radians
-                    type: array
-                    items:
-                      type: number
-                additionalProperties: True
-            additionalProperties: True
       additionalProperties: True
+  time_history:
+    type: object
+    required:
+      - channels
+      - filename
+    properties:
+      channels:
+        type: array
+        items:
+          type: string
+      filename:
+        type: string
+        description: Filename of the companion .npz file containing time-history arrays.
+
 additionalProperties: True
