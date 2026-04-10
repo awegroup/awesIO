@@ -458,6 +458,8 @@ definitions:
                 type:
                   type: string
                   const: electric_winch
+                min_tether_speed:
+                  type: number
                 max_tether_speed:
                   type: number
                   minimum: 0
