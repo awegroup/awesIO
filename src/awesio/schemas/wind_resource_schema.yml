@@ -71,14 +71,10 @@ properties:
       time_range:
         type: object
         properties:
-          start_year:
-            type: integer
-          end_year:
-            type: integer
-          years_included:
-            type: array
-          months_included:
-            type: [string, array]
+          start_date:
+            type: string
+          end_date:
+            type: string
         additionalProperties: false
       altitude_range:
         type: array

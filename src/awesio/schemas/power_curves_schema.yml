@@ -60,6 +60,11 @@ properties:
             additionalProperties: false
           time_range:
             type: object
+            properties:
+              start_date:
+                type: string
+              end_date:
+                type: string
           data_source:
             type: string
         additionalProperties: True
