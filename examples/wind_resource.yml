@@ -15,7 +15,7 @@ metadata:
   altitude_range:
   - 10
   - 500
-  n_clusters: 8
+  n_profiles: 8
   n_wind_speed_bins: 50
   n_wind_direction_bins: 10
   wind_direction_bin_width: 36.0
@@ -203,7 +203,7 @@ wind_direction_bins:
   - 270.0
   - 306.0
   - 342.0
-clusters:
+profiles:
 - id: 1
   u_normalized:
   - 0.6694798547980485
@@ -1031,7 +1031,7 @@ clusters:
 probability_matrix:
   description: Probability of each cluster occurring at each wind speed and direction
     bin (% of total samples)
-  dimensions: '[n_clusters x n_wind_speed_bins x n_wind_direction_bins]'
+  dimensions: '[n_profiles x n_wind_speed_bins x n_wind_direction_bins]'
   data:
   - - - 0.0
       - 0.0

@@ -2,13 +2,13 @@ $schema: http://json-schema.org/draft-07/schema#
 $id: wind_resource_schema
 title: Wind Resource Data Schema
 description: >
-  Schema for wind resource data with clustering information.
+  Schema for wind resource data with wind profile description.
 
 type: object
 required:
   - metadata
   - altitudes
-  - clusters
+  - profiles
   - probability_matrix
 
 properties:
@@ -20,7 +20,7 @@ properties:
       - note
       - awesIO_version
       - schema
-      - n_clusters
+      - n_profiles
       - reference_height
       - data_source
       - time_created
@@ -36,7 +36,7 @@ properties:
       schema:
         type: string
         const: wind_resource_schema.yml
-      n_clusters:
+      n_profiles:
         type: integer
         minimum: 1
       n_wind_speed_bins:
@@ -113,7 +113,7 @@ properties:
           type: number
     additionalProperties: false
 
-  clusters:
+  profiles:
     type: array
     items:
       type: object
