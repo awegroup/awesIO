@@ -71,7 +71,9 @@ The validator auto-detects the schema using ``metadata.schema``.
    data = validate("path/to/your_file.yml")
 
 If validation fails, the error message includes the exact path of the
-failing property and the expected constraints.
+failing property.
+
+You can also add the ``restrictive=True`` option to enforce that no additional properties are allowed beyond those defined in the schema. This can help catch typos or unintended fields in your YAML files.
 
 Schema selection
 ================

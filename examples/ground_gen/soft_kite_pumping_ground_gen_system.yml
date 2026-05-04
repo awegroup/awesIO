@@ -39,7 +39,7 @@ components:
       conductive: false
       material:
         type: dyneema
-        youngs_modulus: 0.85e9 # Pa
+        youngs_modulus: 0.85e+9 # Pa
   ground_station:
     name: example_pumping_ground_gen_station
     type: pumping_ground_gen_station

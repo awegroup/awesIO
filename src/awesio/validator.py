@@ -30,8 +30,7 @@ def _enforce_no_additional_properties(schema):
 
         # If this is an object type schema, and additionalProperties is not specified,
         #   set additionalProperties: false
-        if (
-            schema.get("type") == "object" or "properties" in schema
+        if (schema.get("type") == "object" or "properties" in schema
         ) and "additionalProperties" not in schema:
             schema["additionalProperties"] = False
 
@@ -52,7 +51,7 @@ def _enforce_no_additional_properties(schema):
 
 
 def validate(
-    input: dict | str | Path, restrictive: bool = True, defaults: bool = False,
+    input: dict | str | Path, restrictive: bool = False,
 ) -> None:
     """
     Validates a given AWESIO input by auto-detecting the schema type from metadata.
@@ -61,9 +60,7 @@ def validate(
         input (dict | str | Path): Input data as a dictionary or a path to a YAML file 
             containing the data to be validated.
         restrictive (bool, optional): If True, the schema will be modified to enforce
-            that no additional properties are allowed. Defaults to True.
-        defaults (bool, optional): If True, default values specified in the schema will 
-            be applied to the input data during validation. Defaults to False.
+            that no additional properties are allowed. Defaults to False.
 
     Raises:
         FileNotFoundError: If the schema file corresponding to the schema type is not found.
@@ -71,8 +68,7 @@ def validate(
         ValueError: If the schema type cannot be determined from the input data.
 
     Returns:
-        dict: The validated input data. If `defaults` is True, the returned data will 
-        include default values specified in the schema. If validation fails, the data
+        dict: The validated input data. If validation fails, the data
         is still returned but a validation error message is printed.
     """
     if type(input) is dict:
@@ -103,10 +99,7 @@ def validate(
         schema = _enforce_no_additional_properties(schema)
 
     try:
-        if defaults:
-            _jsonschema_validate_modified(data, schema, cls = DefaultValidatingDraft7Validator, registry=registry)
-        else:
-            _jsonschema_validate_modified(data, schema, registry=registry)
+        _jsonschema_validate_modified(data, schema, registry=registry)
         
     except (ValueError, jsonschema.ValidationError) as e:
         warnings.warn(f"Validation failed: {e}", UserWarning, stacklevel=2)
@@ -114,22 +107,6 @@ def validate(
 
     return data
 
-
-# See: https://python-jsonschema.readthedocs.io/en/stable/faq/#why-doesn-t-my-schema-s-default-property-set-the-default-on-my-instance
-def extend_with_default(validator_class):
-    validate_properties = validator_class.VALIDATORS["properties"]
-
-    def set_defaults(validator, properties, instance, schema):
-        for property, subschema in properties.items():
-            if "default" in subschema:
-                instance.setdefault(property, subschema["default"])
-
-        for error in validate_properties(validator, properties, instance, schema):
-            yield error
-
-    return jsonschema.validators.extend(validator_class, {"properties": set_defaults})
-
-DefaultValidatingDraft7Validator = extend_with_default(jsonschema.Draft7Validator)
 
 def _jsonschema_validate_modified(instance, schema, cls=None, *args, **kwargs):
     """Modification of the `jsonschema.validate` which is though to provide a better error message when validation fails"""

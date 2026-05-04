@@ -8,11 +8,7 @@ Input/output standard for airborne wind energy systems.
 
 awesIO provides JSON Schema-based validation for AWE system configurations and was developed in the context of IEA Wind Task 48. The terminology/ontology used follows the Airborne Wind Europe Glossary: https://airbornewindeurope.org/glossary-2
 
-<p align="left">
-  <a href="https://awegroup.github.io/awesIO/">
-    <img src="https://img.shields.io/badge/📖_Documentation-View_Docs-blue?style=for-the-badge" alt="Documentation">
-  </a>
-</p>
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://awegroup.github.io/awesIO/)
 
 
 
@@ -66,6 +62,8 @@ from awesio.validator import validate
 data = validate("path/to/config.yml")
 ```
 
+You can also add the ``restrictive=True`` option to enforce that no additional properties are allowed beyond those defined in the schema. This can help catch typos or unintended fields in your YAML files.
+
 ## Installation for developers
 
 Fetch the latest version from git:
@@ -80,13 +78,6 @@ pip install -e .
 pip install -r docs/requirements.txt
 ```
 
-### pixi
-Run the default validation:
-```bash
-pixi run validate
-```
-This will install all of the required Python packages and validate the example files against the included schema files.
-
 ## Examples
 
 Example YAML configuration files are available in the `examples/` directory.
@@ -95,8 +86,4 @@ Example YAML configuration files are available in the `examples/` directory.
 
 Please check the developer guide in the documentation:
 
-<p align="left">
-  <a href="https://awegroup.github.io/awesIO/source/developer_guide.html">
-    <img src="https://img.shields.io/badge/👨‍💻_Developer_Guide-Contribute-green?style=for-the-badge" alt="Developer Guide">
-  </a>
-</p>
+[![Developer Guide](https://img.shields.io/badge/developer%20guide-GitHub%20Pages-green)](https://awegroup.github.io/awesIO/source/developer_guide.html)

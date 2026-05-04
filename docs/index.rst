@@ -1,170 +1,89 @@
 .. awesIO documentation master file
 
-======
-awesIO
-======
-
-**YAML schemas for Airborne Wind Energy systems**
-
-awesIO is a standardized input/output specification for Airborne Wind Energy (AWE) 
-systems, providing YAML schemas that define data formats for kites, tethers, ground 
-stations, wind resources, and complete AWE system configurations.
-
-.. note::
-   awesIO is inspired by and follows the architecture of 
-   `windIO <https://github.com/IEAWindTask37/windIO>`_, the IEA Wind Task 37 
-   ontology for traditional wind turbines.
-
+===============
 What is awesIO?
 ===============
 
-awesIO provides a common language for describing AWE systems, enabling:
+awesIO (Airborne Wind Energy Systems Input/Output) is a standardized and validated
+data framework for airborne wind energy (AWE) applications. Its purpose is to provide
+a tool-independent format for system configurations, environmental conditions, and
+simulation inputs and outputs.
 
-* **Interoperability** between different AWE simulation tools and frameworks
-* **Standardized data exchange** for research collaboration
-* **Validation** of input files against formal schemas
-* **Documentation** of AWE system specifications
+The framework uses human-readable YAML files that follow predefined schemas. These
+schemas define the structure, naming conventions, and required fields for each file
+type. This enables different tools to interpret the same files in a consistent and
+unambiguous way. By using a common data format, awesIO allows independently developed
+models to exchange data without tool-specific manual conversion.
 
-Key Features
-------------
+.. note::
+   All quantities in awesIO are expressed in **SI units** throughout all schemas
+   and example files.
 
-* YAML-based schemas - Human-readable, version-controllable specifications
-* Built-in validation - Automatic checking of input file correctness
-* Tool integration - Works with simulation frameworks like AWESPA
-* Comprehensive coverage - Schemas for all major AWE subsystems
+.. note::
+   awesIO is inspired by and follows the architecture of
+   `windIO <https://github.com/IEAWindTask37/windIO>`_, the IEA Wind Task 37
+   ontology for traditional wind turbines.
 
-AWE System Components
-=====================
+Goals
+=====
 
-awesIO defines schemas for complete AWE systems and their operational parameters:
+The key goals of the awesIO framework are:
 
-.. list-table::
-   :header-rows: 1
-   :widths: 20 50 30
+* **Interoperability** — different AWE simulation tools can read and write the same
+  files without custom adapters or manual conversion.
+* **Standardization** — a shared naming convention and file structure reduces
+  ambiguity in data exchange between research groups and tools.
+* **Validation** — files can be checked for compliance with the schema before or
+  after a simulation run, reducing errors caused by incomplete or inconsistent inputs.
+* **Collaboration** — a public, common format makes it easier to compare results
+  from different models, evaluate alternative system designs, and reproduce results.
 
-   * - Component
-     - Description
-     - Schema Reference
-   * - **Complete System**
-     - Wing, bridle, control system, tether, and ground station in one schema
-     - :doc:`source/system_schema`
-   * - **Wind Resource**
-     - Wind profile clusters, probability distributions
-     - :doc:`source/wind_resource_schema`
-   * - **Power Curves**
-     - Power output vs. wind speed relationships
-     - :doc:`source/power_curves_schema`
-   * - **Operational Constraints**
-     - Operating limits, safety boundaries, terrain constraints
-     - :doc:`source/operational_constraints_schema`
+Validation
+==========
 
+A central feature of awesIO is its built-in validation capability. Before a file is
+used in a simulation, or after it has been produced, it can be verified for:
 
-Getting Started
-===============
+* compliance with the defined schema,
+* presence of all required parameters,
+* consistent naming conventions.
 
-Installation
-------------
+This validation step makes it explicit whether a file conforms to the awesIO standard,
+helping to prevent errors from reaching the simulation stage.
 
-Install using pip
-~~~~~~~~~~~~~~~~~
+Schemas
+=======
 
-Install the latest version from the main branch:
+awesIO currently contains four schemas, covering the main data exchanged in a
+performance assessment workflow:
 
-.. code-block:: bash
+* :doc:`source/system_schema` — the central schema describing the complete AWE
+  system, including wing, bridle, control system, tether, and ground station.
+* :doc:`source/wind_resource_schema` — site-specific wind conditions.
+* :doc:`source/power_curves_schema` — power output as a function of wind speed.
+* :doc:`source/operational_constraints_schema` — limits that restrict system
+  operation.
 
-   pip install git+https://github.com/awegroup/awesIO.git
+Standardizing these files allows the main inputs and outputs of a performance
+assessment to be exchanged between tools in a consistent way. For example, different
+power estimation models can be evaluated using the same wind resource and system
+description, enabling direct comparison of modelling approaches.
 
-Install from a specific branch, commit, or tag:
+Availability
+============
 
-.. code-block:: bash
-
-   pip install git+https://github.com/awegroup/awesIO.git@branch-name
-   pip install git+https://github.com/awegroup/awesIO.git@commit-hash
-   pip install git+https://github.com/awegroup/awesIO.git@v0.1.0
-
-Install using pixi
-~~~~~~~~~~~~~~~~~~
-
-Install the latest version:
-
-.. code-block:: bash
-
-   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git"
-
-Install from a specific branch, commit, or tag:
-
-.. code-block:: bash
-
-   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@branch-name"
-   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@commit-hash"
-   pixi add --pypi "awesio @ git+https://github.com/awegroup/awesIO.git@v0.1.0"
-
-For developers
-~~~~~~~~~~~~~~
-
-Clone and install in development mode:
-
-.. code-block:: bash
-
-   git clone https://github.com/awegroup/awesIO.git
-   cd awesIO
-   pip install -e .
-   pip install -r docs/requirements.txt
-
-Or use pixi:
-
-.. code-block:: bash
-
-   git clone https://github.com/awegroup/awesIO.git
-   cd awesIO
-   pixi run validate
-
-Quick Example
--------------
-
-Here's a simple example of validating an AWE configuration:
-
-.. code-block:: python
-
-   from awesio.validator import validate
-   
-   # Auto-detects schema from file metadata
-   validated_data = validate("path/to/config.yml")
-   
-   # Access validated data
-   print(f"System name: {validated_data['metadata']['name']}")
-
-Validation Script
------------------
-
-Validate multiple files at once:
-
-.. code-block:: bash
-
-   # Edit scripts/validate_yaml.py to set file paths
-   python scripts/validate_yaml.py
-
-Schema Auto-Detection
----------------------
-
-Each YAML file must include a schema reference in its metadata:
-
-.. code-block:: yaml
-
-   metadata:
-     name: My AWE System
-     description: System description
-     note: Additional notes
-     awesIO_version: 0.1.0
-     schema: system_schema.yml  # Auto-detected by validator
-
-Table of Contents
-=================
+awesIO is hosted on `GitHub <https://github.com/awegroup/awesIO>`_, making the
+schemas, documentation, and examples freely accessible to researchers and developers.
+It can also be developed collaboratively through issues, discussions, and contributions
+to the repository. The validation functionality is available as a Python package
+installable via ``pip``, so researchers can check their own files directly from their
+workflow.
 
 .. toctree::
    :maxdepth: 2
    :caption: User Guide
 
+   self
    source/getting_started
 
 .. toctree::
@@ -190,12 +109,6 @@ Indices and Tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-Contributing
-============
-
-awesIO is developed by the AWE research community. Contributions are welcome!
 
 * **GitHub**: https://github.com/awegroup/awesIO
 * **Issues**: https://github.com/awegroup/awesIO/issues
