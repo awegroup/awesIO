@@ -1,0 +1,102 @@
+metadata:
+  name: Fixed Wing Multiple Tether GG System
+  description: Config for a fixed wing multiple tether ground gen system
+  note: None
+  awesIO_version: 0.1.0
+  schema: system_schema.yml
+assembly:
+  connectivity matrix:
+    - [K1, T1]
+    - [K2, T3]
+    - [T2, G1]
+    - [T4, G2]
+  
+components:
+  kite:
+    name: Fixed Wing Multiple Tether GG System
+    type: fixed_wing_GC # Meaning it is a fixed wing controlled at the ground
+    version: 1.0
+    joints: # K for kite
+      left_wing_joint:
+        id: K1  
+      right_wing_joint:
+        id: K2  
+    wing:
+      name: Fixed Wing Multiple Tether GG System
+      type: fixed_wing
+      version: 1.0
+      structure:
+        projected_surface_area: 19.75 # m2
+        mass: 22.8 # kg, all mass lumped in the wing for simplicity
+  tether:
+    name: left tether
+    type: non_conductive_tether
+    version: 1.0
+    joints: # T for tether
+      upper_tether_joint:
+        id: T1 
+      lower_tether_joint:
+        id: T2
+    structure:
+      length: 340
+      diameter: 0.010
+      density: 724.0
+      max_tether_force: 8200.0 # N
+      conductive: false
+      material:
+        type: dyneema
+        youngs_modulus: 0.85e+9 # Pa
+  tether:
+    name: right tether
+    type: non_conductive_tether
+    version: 1.0
+    joints: # T for tether
+      upper_tether_joint:
+        id: T3 
+      lower_tether_joint:
+        id: T4
+    structure:
+      length: 340
+      diameter: 0.010
+      density: 724.0
+      max_tether_force: 8200.0 # N
+      conductive: false
+      material:
+        type: dyneema
+        youngs_modulus: 0.85e+9 # Pa
+  ground_station:
+    name: example_pumping_ground_gen_station
+    type: pumping_ground_gen_station
+    version: 1.0
+    joints:
+      left_drum_joint:
+        id: G1 # G for ground station
+      right_drum_joint:
+        id: G2 # G for ground station
+    structure:
+      mass: 0.0
+    drum:
+      name: left drum
+      type: electric_winch
+      max_tether_speed: 10.0
+    drum:
+      name: right drum
+      type: electric_winch
+      max_tether_speed: 10.0
+    generator:
+      name: left generator
+      type: permanent_magnet_synchronous
+      max_power: 40000.0 # W
+      efficiency: 1
+    generator:
+      name: right generator
+      type: permanent_magnet_synchronous
+      max_power: 40000.0 # W
+      efficiency: 1
+    storage:
+      type: battery_bank
+      capacity: 100000.0 # Wh
+      max_charge_rate: 50000.0 # W
+      max_discharge_rate: 50000.0 # W
+      efficiency: 1
+      state_of_charge_initial: 0.5

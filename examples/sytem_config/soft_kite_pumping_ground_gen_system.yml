@@ -5,32 +5,46 @@ metadata:
   awesIO_version: 0.1.0
   schema: system_schema.yml
 assembly:
-  airborne_type: soft_kite
-  generation_type: pumping_ground_gen
+  connectivity matrix:
+    - [K1, T1]
+    - [T2, G1]
+  
 components:
-  wing:
-    name: Kitepower V3.20
-    type: LEI_soft_kite
+  kite:
+    name: Kitepower V3_20
+    type: soft_kite_kcu # Meaning it is a soft kite controlled with a kcu
     version: 1.0
-    structure:
-      projected_surface_area: 19.75 # m2
-      mass: 22.8 # kg, all mass lumped in the wing for simplicity
-  bridle:
-    name: Kitepower V3.20 Bridle
-    type: LEI_soft_kite_bridle 
-    version: 1.0
-    structure:
-      mass: 0
-  control_system:
-    name: Kitepower V3.20 KCU
-    type: kite_control_unit
-    version: 1.0
-    structure:
-      mass: 0
+    joints:
+      kcu_joint:
+        id: K1  # K for kite
+    wing:
+      name: Kitepower V3.20
+      type: LEI_soft_kite
+      version: 1.0
+      structure:
+        projected_surface_area: 19.75 # m2
+        mass: 22.8 # kg, all mass lumped in the wing for simplicity
+    bridle:
+      name: Kitepower V3.20 Bridle
+      type: LEI_soft_kite_bridle 
+      version: 1.0
+      structure:
+        mass: 0
+    control_system:
+      name: Kitepower V3.20 KCU
+      type: kite_control_unit
+      version: 1.0
+      structure:
+        mass: 0
   tether:
-    name: Kitepower V3.20
+    name: lower tether
     type: non_conductive_tether
     version: 1.0
+    joints:
+      upper_tether_joint:
+        id: T1 # T for tether
+      lower_tether_joint:
+        id: T2
     structure:
       length: 340
       diameter: 0.010
@@ -44,6 +58,9 @@ components:
     name: example_pumping_ground_gen_station
     type: pumping_ground_gen_station
     version: 1.0
+    joints:
+      drum_joint:
+        id: G1 # G for ground station
     structure:
       mass: 0.0
     drum:
