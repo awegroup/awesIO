@@ -37,33 +37,33 @@ properties:
   assembly:
     type: object
     required:
-      - airborne_type
-      - generation_type
+      - connectivity matrix
     properties:
-      airborne_type:
-        type: string
-        enum: [soft_kite, fixed_wing_aircraft, hybrid_kite]
-      generation_type:
-        type: string
-        enum: [pumping_ground_gen, rotary_ground_gen, fly_gen]
+      connectivity matrix:
+        type: array
+        items:
+          type: array
+          items:
+            type: string
+          minItems: 2
+          maxItems: 2
     additionalProperties: false
 
   components:
     type: object
     required:
-      - wing
-      - control_system
-      - tether
+      - kites
+      - tethers
       - ground_station
     properties:
-      wing:
-        $ref: "#/definitions/wing"
-      bridle:
-        $ref: "#/definitions/bridle"
-      control_system:
-        $ref: "#/definitions/control_system"
-      tether:
-        $ref: "#/definitions/tether"
+      kites:
+        type: array
+        items:
+          $ref: "#/definitions/kite"
+      tethers:
+        type: array
+        items:
+          $ref: "#/definitions/tether"
       ground_station:
         $ref: "#/definitions/ground_station"
     additionalProperties: false
@@ -71,6 +71,49 @@ properties:
 additionalProperties: false
 
 definitions:
+  # ============================================================================
+  # JOINTS
+  # ============================================================================
+  joints:
+    type: object
+    additionalProperties:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+      additionalProperties: false
+
+  # ============================================================================
+  # KITE - Contains wing, bridle, and control system
+  # ============================================================================
+  kite:
+    type: object
+    required:
+      - name
+      - type
+      - version
+      - joints
+      - wing
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+        enum: [soft_kite_kcu, fixed_wing_GC]
+      version:
+        type: [string, number]
+      joints:
+        $ref: "#/definitions/joints"
+      wing:
+        $ref: "#/definitions/wing"
+      bridle:
+        $ref: "#/definitions/bridle"
+      control_system:
+        $ref: "#/definitions/control_system"
+    additionalProperties: false
+
   # ============================================================================
   # WING - Type-dependent validation
   # ============================================================================
@@ -86,7 +129,7 @@ definitions:
         type: string
       type:
         type: string
-        enum: [LEI_soft_kite, ram_air_soft_kite, fixed_wing_aircraft]
+        enum: [LEI_soft_kite, ram_air_soft_kite, fixed_wing]
       version:
         type: [string, number]
       structure:
@@ -174,11 +217,12 @@ definitions:
             structure:
               type: object
               required:
-                - wing_area
-                - span
-                - aspect_ratio
+                - projected_surface_area
                 - mass
               properties:
+                projected_surface_area:
+                  type: number
+                  minimum: 0
                 wing_area:
                   type: number
                   minimum: 0
@@ -301,6 +345,7 @@ definitions:
       - name
       - type
       - version
+      - joints
       - structure
     properties:
       name:
@@ -310,6 +355,8 @@ definitions:
         enum: [non_conductive_tether, conductive_tether]
       version:
         type: [string, number]
+      joints:
+        $ref: "#/definitions/joints"
       structure:
         type: object
     allOf:
@@ -405,6 +452,123 @@ definitions:
               additionalProperties: false
       
   # ============================================================================
+  # DRUM OBJECT
+  # ============================================================================
+  drum_object:
+    type: object
+    required:
+      - type
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+        const: electric_winch
+      min_tether_speed:
+        type: number
+      max_tether_speed:
+        type: number
+        minimum: 0
+      max_tether_force:
+        type: number
+        minimum: 0
+      max_winch_acceleration:
+        type: number
+        minimum: 0
+      drum_diameter:
+        type: number
+        minimum: 0
+      drum_width:
+        type: number
+        minimum: 0
+    additionalProperties: false
+
+  # ============================================================================
+  # GENERATOR OBJECT
+  # ============================================================================
+  generator_object:
+    type: object
+    required:
+      - type
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+        enum: [permanent_magnet_synchronous, induction, dc]
+      rated_power:
+        type: number
+        minimum: 0
+      max_power:
+        type: number
+        minimum: 0
+      rated_speed:
+        type: number
+        minimum: 0
+      efficiency:
+        type: number
+        minimum: 0
+        maximum: 1
+      voltage:
+        type: number
+        minimum: 0
+    additionalProperties: false
+
+  # ============================================================================
+  # GEARBOX OBJECT
+  # ============================================================================
+  gearbox_object:
+    type: object
+    required:
+      - type
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+        enum: [planetary, helical, bevel]
+      gear_ratio:
+        type: number
+        minimum: 0
+      efficiency:
+        type: number
+        minimum: 0
+        maximum: 1
+    additionalProperties: false
+
+  # ============================================================================
+  # STORAGE OBJECT
+  # ============================================================================
+  storage_object:
+    type: object
+    required:
+      - type
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+        enum: [battery_bank, flywheel, capacitor_bank]
+      capacity:
+        type: number
+        minimum: 0
+      max_charge_rate:
+        type: number
+        minimum: 0
+      max_discharge_rate:
+        type: number
+        minimum: 0
+      efficiency:
+        type: number
+        minimum: 0
+        maximum: 1
+      state_of_charge_initial:
+        type: number
+        minimum: 0
+        maximum: 1
+    additionalProperties: false
+
+  # ============================================================================
   # GROUND STATION - Type-dependent validation
   # ============================================================================
   ground_station:
@@ -413,6 +577,7 @@ definitions:
       - name
       - type
       - version
+      - joints
       - structure
     properties:
       name:
@@ -422,6 +587,8 @@ definitions:
         enum: [pumping_ground_gen_station, rotary_ground_gen_station, fly_gen_station]
       version:
         type: [string, number]
+      joints:
+        $ref: "#/definitions/joints"
       structure:
         type: object
         required:
@@ -434,14 +601,14 @@ definitions:
             type: number
             minimum: 0
         additionalProperties: false
-      drum:
-        type: object
-      generator:
-        type: object
-      gearbox:
-        type: object
-      storage:
-        type: object
+      drums:
+        type: array
+      generators:
+        type: array
+      gearboxes:
+        type: array
+      storages:
+        type: array
     allOf:
       # Pumping ground-gen station
       - if:
@@ -450,99 +617,22 @@ definitions:
               const: pumping_ground_gen_station
         then:
           properties:
-            drum:
-              type: object
-              required:
-                - type
-              properties:
-                type:
-                  type: string
-                  const: electric_winch
-                min_tether_speed:
-                  type: number
-                max_tether_speed:
-                  type: number
-                  minimum: 0
-                max_tether_force:
-                  type: number
-                  minimum: 0
-                max_winch_acceleration:
-                  type: number
-                  minimum: 0
-                drum_diameter:
-                  type: number
-                  minimum: 0
-                drum_width:
-                  type: number
-                  minimum: 0
-              additionalProperties: false
-            generator:
-              type: object
-              required:
-                - type
-              properties:
-                type:
-                  type: string
-                  enum: [permanent_magnet_synchronous, induction, dc]
-                rated_power:
-                  type: number
-                  minimum: 0
-                max_power:
-                  type: number
-                  minimum: 0
-                rated_speed:
-                  type: number
-                  minimum: 0
-                efficiency:
-                  type: number
-                  minimum: 0
-                  maximum: 1
-                voltage:
-                  type: number
-                  minimum: 0
-              additionalProperties: false
-            gearbox:
-              type: object
-              required:
-                - type
-              properties:
-                type:
-                  type: string
-                  enum: [planetary, helical, bevel]
-                gear_ratio:
-                  type: number
-                  minimum: 0
-                efficiency:
-                  type: number
-                  minimum: 0
-                  maximum: 1
-              additionalProperties: false
-            storage:
-              type: object
-              required:
-                - type
-              properties:
-                type:
-                  type: string
-                  enum: [battery_bank, flywheel, capacitor_bank]
-                capacity:
-                  type: number
-                  minimum: 0
-                max_charge_rate:
-                  type: number
-                  minimum: 0
-                max_discharge_rate:
-                  type: number
-                  minimum: 0
-                efficiency:
-                  type: number
-                  minimum: 0
-                  maximum: 1
-                state_of_charge_initial:
-                  type: number
-                  minimum: 0
-                  maximum: 1
-              additionalProperties: false
+            drums:
+              type: array
+              items:
+                $ref: "#/definitions/drum_object"
+            generators:
+              type: array
+              items:
+                $ref: "#/definitions/generator_object"
+            gearboxes:
+              type: array
+              items:
+                $ref: "#/definitions/gearbox_object"
+            storages:
+              type: array
+              items:
+                $ref: "#/definitions/storage_object"
       
       # Rotary ground-gen station
       - if:
@@ -553,8 +643,10 @@ definitions:
           properties:
             generator:
               type: object
-            gearbox:
-              type: object
+            gearboxes:
+              type: array
+              items:
+                $ref: "#/definitions/gearbox_object"
       
       # Fly-gen station
       - if:
@@ -563,6 +655,8 @@ definitions:
               const: fly_gen_station
         then:
           properties:
-            storage:
-              type: object
+            storages:
+              type: array
+              items:
+                $ref: "#/definitions/storage_object"
     additionalProperties: false
