@@ -5,7 +5,7 @@ metadata:
   awesIO_version: 0.1.0
   schema: system_schema.yml
 assembly:
-  connectivity matrix:
+  connectivity_matrix:
     - [K1, T1]
     - [K2, T3]
     - [T2, G1]
@@ -14,7 +14,7 @@ assembly:
 components:
   kites:
     - name: Fixed Wing Multiple Tether GG System
-      type: fixed_wing_GC # Meaning it is a fixed wing controlled at the ground
+      type: fixed_wing_gc # Meaning it is a fixed wing controlled at the ground
       version: 1.0
       joints: # K for kite
         left_wing_joint:

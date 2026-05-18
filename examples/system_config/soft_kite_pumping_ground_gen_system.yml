@@ -5,7 +5,7 @@ metadata:
   awesIO_version: 0.1.0
   schema: system_schema.yml
 assembly:
-  connectivity matrix:
+  connectivity_matrix:
     - [K1, T1]
     - [T2, G1]
   

@@ -37,9 +37,9 @@ properties:
   assembly:
     type: object
     required:
-      - connectivity matrix
+      - connectivity_matrix
     properties:
-      connectivity matrix:
+      connectivity_matrix:
         type: array
         items:
           type: array
@@ -101,7 +101,7 @@ definitions:
         type: string
       type:
         type: string
-        enum: [soft_kite_kcu, fixed_wing_GC]
+        enum: [soft_kite_kcu, fixed_wing_gc]
       version:
         type: [string, number]
       joints:
@@ -641,8 +641,10 @@ definitions:
               const: rotary_ground_gen_station
         then:
           properties:
-            generator:
-              type: object
+            generators:
+              type: array
+              items:
+                $ref: "#/definitions/generator_object"
             gearboxes:
               type: array
               items:
