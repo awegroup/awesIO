@@ -87,3 +87,6 @@ Example YAML configuration files are available in the `examples/` directory.
 Please check the developer guide in the documentation:
 
 [![Developer Guide](https://img.shields.io/badge/developer%20guide-GitHub%20Pages-green)](https://awegroup.github.io/awesIO/source/developer_guide.html)
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
