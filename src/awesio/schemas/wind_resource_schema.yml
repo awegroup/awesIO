@@ -47,7 +47,9 @@ properties:
         minimum: 1
       wind_direction_bin_width:
         type: number
+        description: "[deg]"
         minimum: 0
+        maximum: 360
       reference_height:
         type: number
         minimum: 0
@@ -102,15 +104,21 @@ properties:
 
   wind_direction_bins:
     type: object
+    description: >
+      Bearings the wind blows from [deg], as the conventions page defines them.
     properties:
       bin_edges:
         type: array
         items:
           type: number
+          minimum: 0
+          maximum: 360
       bin_centers:
         type: array
         items:
           type: number
+          minimum: 0
+          maximum: 360
     additionalProperties: false
 
   profiles:
@@ -180,4 +188,4 @@ properties:
               type: number
     additionalProperties: false
 
-additionalProperties: false
+additionalProperties: true

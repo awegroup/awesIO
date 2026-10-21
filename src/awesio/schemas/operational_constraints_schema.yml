@@ -69,6 +69,7 @@ properties:
         type: object
       max_bank_angle:
         type: number
+        description: "[deg]"
       max_acceleration:
         type: number
       stall_margin:
@@ -183,12 +184,11 @@ properties:
     properties:
       description:
         type: string
-      reference_point:
-        type: string
-      azimuth_reference:
-        type: string
       azimuth_zones:
         type: array
+        description: >
+          Sectors around the ENU origin, each covering the bearings of its
+          azimuth_range as the conventions page defines them.
         items:
           type: object
           required:
@@ -197,12 +197,16 @@ properties:
           properties:
             azimuth_range:
               type: array
+              description: >
+                Bearings where the sector starts and ends [deg]. The sector runs
+                eastwards from the first to the last, through north if the first is
+                larger.
               minItems: 2
               maxItems: 2
               items:
                 type: number
                 minimum: 0
-                maximum: 6.283185307179586
+                maximum: 360
             flight_allowed:
               type: boolean
             distance_restrictions:
@@ -215,6 +219,7 @@ properties:
                 properties:
                   distance_range:
                     type: array
+                    description: Horizontal distance from the ENU origin [m].
                     minItems: 2
                     maxItems: 2
                     items:
@@ -227,4 +232,4 @@ properties:
           additionalProperties: false
     additionalProperties: false
 
-additionalProperties: false
+additionalProperties: true

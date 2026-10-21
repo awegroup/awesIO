@@ -1,0 +1,776 @@
+$schema: http://json-schema.org/draft-07/schema#
+$id: structure_schema
+title: AWE System Structure Schema
+description: >
+  Resolved structural definition of an AWE system: the points, the segments,
+  pulleys, tethers and winches built on them, the wings with their spanwise
+  stations and canopy faces, the rigid bodies, and the tubes between those
+  bodies.
+
+  Fully resolved and expanded — no variable substitution, no segment counts left
+  to expand, every component explicit — so a file is readable with nothing
+  beyond a YAML or JSON parser. This is the layer system_schema.yml leaves
+  free-form under its wing_sections, bridle_nodes, bridle_lines and
+  bridle_connections blocks.
+
+  Every block is a headers/units/data table and every reference is by name. A
+  reader addresses columns by header, never by position, and ignores a column
+  it does not know. What a file holds is one of four kinds:
+
+  The core is what a block requires, its leading columns: what drawing the
+  system and pairing it with a saved state need, and nothing more.
+
+  An awesIO column is optional, defined once in its block's `optionalColumns`
+  with its header, unit and values, and checked wherever it stands. A quantity
+  is one when it means the same, in the same unit, to any model that reads it,
+  and more than one tool writes it or would.
+
+  Materials say what the elements are made of, shared by the tools that build
+  them, the law fixing each material's parameters.
+
+  A tool column is any other column, appended with the unit its tool states.
+  How a solver treats the kite — whether it steps a point dynamically or not at
+  all, its drag, damping, what a line does in compression, a winch's motor — is
+  a tool's.
+
+  An absent optional block means the same as an empty one.
+
+  A column's suffix names the frame of its vectors and a rotation is named
+  `Q_<from>2<to>`, as docs/source/conventions.rst defines them.
+
+  Positions are in the ENU world frame, by convention with the kite at 90°
+  elevation and 0° heading, and each wing says where its own KA frame is in
+  it. How the system moves from there — positions, velocities, forces, twist
+  angles, reel-out — is live state and is never described here.
+
+type: object
+required:
+  - metadata
+  - points
+  - segments
+
+properties:
+  metadata:
+    type: object
+    required:
+      - name
+      - description
+      - note
+      - awesIO_version
+      - schema
+      - n_points
+      - connectivity_sha
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      note:
+        type: string
+      awesIO_version:
+        type: string
+        description: Version of this schema the file was written against.
+        pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+      schema:
+        type: string
+        const: structure_schema.yml
+      n_points:
+        type: integer
+        minimum: 1
+        description: Number of rows in the points block.
+      connectivity_sha:
+        type: string
+        description: >
+          Lowercase hex SHA-256 of the connectivity. State recorded against the
+          structure can quote it, so that state is never replayed against a
+          structure that indexes differently.
+
+          The preimage is ASCII and built in document order, in three
+          sections: the number of points, then each segment's two endpoints as
+          ONE-BASED row numbers into the points block; then the number of
+          bodies, then each tube's two bodies as one-based row numbers into the
+          bodies block; then the number of canopy faces, then each face's
+          corners as row numbers into the points block. The numbers of one
+          element are comma-separated and every field ends in a semicolon, so a
+          lone number always opens a section. Three points joined in a row and
+          spanned by one face, on two bodies joined by one tube, read
+          `3;1,2;2,3;2;1,2;1;1,2,3;`. Row numbers are one-based so that
+          implementations in zero-based languages agree with each other; a
+          reader that gets this wrong sees every file as a mismatch.
+        pattern: '^[0-9a-f]{64}$'
+    additionalProperties: false
+
+  # --------------------------------------------------------------------------
+  # MATERIALS
+  # --------------------------------------------------------------------------
+  materials:
+    description: >
+      What the elements are made of, which a solver needs to build them and a
+      viewer does not. A material is a stiffness `law` and that law's
+      `parameters`, which fix how it deforms and what it weighs. The laws tools
+      share are defined below as `<law>_parameters`, which fix their parameters'
+      names and units and the curve they describe. Any other law is free: it
+      names a model its readers implement, and that model fixes its parameters.
+      A reader that does not implement a material's law cannot build the
+      elements naming it.
+    allOf:
+      - $ref: "#/definitions/table"
+      - properties:
+          headers:
+            items:
+              - const: name
+                description: >
+                  Unique name of the material.
+              - const: law
+                description: >
+                  Name of the stiffness law: `linear`, `membrane` or
+                  `breukels2011` as defined below, or any law its readers
+                  implement.
+              - const: parameters
+                description: >
+                  The law's parameters, by name, in the units the law gives them.
+            minItems: 3
+          units:
+            items:
+              - const: "-"
+              - const: "-"
+              - const: "-"
+            minItems: 3
+          data:
+            items:
+              type: array
+              items:
+                - $ref: "#/definitions/component_name"
+                - type: string
+                  minLength: 1
+                - type: object
+              minItems: 3
+              allOf:
+                - if:
+                    items: [true, const: linear]
+                  then:
+                    items: [true, true, $ref: "#/definitions/linear_parameters"]
+                - if:
+                    items: [true, const: membrane]
+                  then:
+                    items: [true, true, $ref: "#/definitions/membrane_parameters"]
+                - if:
+                    items: [true, const: breukels2011]
+                  then:
+                    items: [true, true, $ref: "#/definitions/breukels2011_parameters"]
+
+  # --------------------------------------------------------------------------
+  # POINTS AND THE ELEMENTS BUILT ON THEM
+  # --------------------------------------------------------------------------
+  points:
+    description: Mass points.
+    allOf:
+      - $ref: "#/definitions/table"
+      - properties:
+          headers:
+            items:
+              - const: name
+                description: >
+                  Unique name of the point. A writer whose geometry is
+                  index-keyed writes the index as a string, "1" upwards.
+              - const: fixed
+                description: >
+                  True where the point is held in the world, false where it is
+                  free or moves with its `body`.
+              - const: body
+                description: >
+                  The rigid body the point is fixed in, moving with it and
+                  passing its force and moment on to it; null for a point of its
+                  own.
+              - const: pos_ENU
+                description: >
+                  Position in the world.
+            minItems: 4
+          units:
+            items:
+              - const: "-"
+              - const: "-"
+              - const: "-"
+              - const: m
+            minItems: 4
+          data:
+            items:
+              type: array
+              items:
+                - $ref: "#/definitions/component_name"
+                - type: boolean
+                - $ref: "#/definitions/optional_name"
+                - $ref: "#/definitions/vec3"
+              minItems: 4
+              if:
+                items: [true, const: true]
+              then:
+                items: [true, true, type: "null"]
+    optionalColumns:
+      extra_mass:
+        description: >
+          Mass the point carries beyond its segments and canopy faces.
+        unit: kg
+        value:
+          $ref: "#/definitions/non_negative"
+
+  segments:
+    description: Straight elastic elements between two points.
+    allOf:
+      - $ref: "#/definitions/table"
+      - properties:
+          headers:
+            items:
+              - const: name
+                description: >
+                  Unique name of the segment.
+              - const: points
+                description: >
+                  The two points the segment joins.
+            minItems: 2
+          units:
+            items:
+              - const: "-"
+              - const: "-"
+            minItems: 2
+          data:
+            items:
+              type: array
+              items:
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/name_pair"
+              minItems: 2
+    optionalColumns:
+      rest_length:
+        description: >
+          Unstretched length.
+        unit: m
+        value:
+          $ref: "#/definitions/length"
+      diameter:
+        description: >
+          Diameter of the line, for its mass, drag and cross-section.
+        unit: m
+        value:
+          $ref: "#/definitions/length"
+      material:
+        description: >
+          The material the line is made of.
+        unit: "-"
+        value:
+          $ref: "#/definitions/component_name"
+
+  spanwise_stations:
+    description: >
+      Chordwise sections of a wing. A station's points give the local chord,
+      from which a reader derives the section's angle of attack and, where the
+      points trace the profile, its airfoil shape. A station's local twist
+      is the angle its chord has turned through about the wing's KA y axis from
+      where the document places it, positive pitching the leading edge up. A
+      station is not tied to the aerodynamic mesh. A wing's stations run from +y
+      to -y of its KA frame.
+    allOf:
+      - $ref: "#/definitions/table"
+      - properties:
+          headers:
+            items:
+              - const: name
+                description: >
+                  Unique name of the station.
+              - const: wing
+                description: >
+                  The wing the station is a section of.
+              - const: points
+                description: >
+                  The points the section is made of.
+            minItems: 3
+          units:
+            items:
+              - const: "-"
+              - const: "-"
+              - const: "-"
+            minItems: 3
+          data:
+            items:
+              type: array
+              items:
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/name_list"
+              minItems: 3
+
+  pulleys:
+    allOf:
+      - $ref: "#/definitions/table"
+      - properties:
+          headers:
+            items:
+              - const: name
+                description: >
+                  Unique name of the pulley.
+              - const: segments
+                description: >
+                  The two segments the pulley trades length between.
+            minItems: 2
+          units:
+            items:
+              - const: "-"
+              - const: "-"
+            minItems: 2
+          data:
+            items:
+              type: array
+              items:
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/name_pair"
+              minItems: 2
+
+  tethers:
+    description: >
+      Ordered runs of segments between two points. Material lives on the
+      segments; a tether is the grouping a winch reels, and the length it is
+      reeled from is its segments' `rest_length`.
+    allOf:
+      - $ref: "#/definitions/table"
+      - properties:
+          headers:
+            items:
+              - const: name
+                description: >
+                  Unique name of the tether.
+              - const: start_point
+                description: >
+                  The point the tether starts at.
+              - const: end_point
+                description: >
+                  The point the tether ends at.
+              - const: segments
+                description: >
+                  The tether's segments, in order from `start_point` to
+                  `end_point`.
+            minItems: 4
+          units:
+            items:
+              - const: "-"
+              - const: "-"
+              - const: "-"
+              - const: "-"
+            minItems: 4
+          data:
+            items:
+              type: array
+              items:
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/name_list"
+              minItems: 4
+
+  winches:
+    allOf:
+      - $ref: "#/definitions/table"
+      - properties:
+          headers:
+            items:
+              - const: name
+                description: >
+                  Unique name of the winch.
+              - const: tethers
+                description: >
+                  The tethers the winch reels together.
+              - const: winch_point
+                description: >
+                  The point the drum sits at.
+            minItems: 3
+          units:
+            items:
+              - const: "-"
+              - const: "-"
+              - const: "-"
+            minItems: 3
+          data:
+            items:
+              type: array
+              items:
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/name_list"
+                - $ref: "#/definitions/component_name"
+              minItems: 3
+    optionalColumns:
+      gear_ratio:
+        description: >
+          Gear ratio of the drive to the drum.
+        unit: "-"
+        value:
+          $ref: "#/definitions/non_negative"
+      drum_radius:
+        description: >
+          Radius of the drum.
+        unit: m
+        value:
+          $ref: "#/definitions/length"
+
+  wings:
+    description: >
+      Lifting surfaces, each with the stations that section it and at most one
+      canopy, meshed by the `canopy_faces` that name the wing.
+    allOf:
+      - $ref: "#/definitions/table"
+      - properties:
+          headers:
+            items:
+              - const: name
+                description: >
+                  Unique name of the wing.
+              - const: pos_ENU
+                description: >
+                  The origin of the wing's KA frame, the frame its aerodynamic
+                  mesh is drawn in, in the world. A position, not necessarily a
+                  point.
+              - const: Q_KA2ENU
+                description: >
+                  Rotation from the wing's KA frame into the world.
+            minItems: 3
+          units:
+            items:
+              - const: "-"
+              - const: m
+              - const: "-"
+            minItems: 3
+          data:
+            items:
+              type: array
+              items:
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/vec3"
+                - $ref: "#/definitions/quaternion"
+              minItems: 3
+    optionalColumns:
+      canopy_material:
+        description: >
+          The material every face of the wing's canopy is made of, or null where
+          the wing has no canopy.
+        unit: "-"
+        value:
+          $ref: "#/definitions/optional_name"
+
+  canopy_faces:
+    description: >
+      Triangles and quadrilaterals of fabric spanned between points, whose mass
+      a reader shares among the corners. How the fabric carries load, as a
+      membrane or as springs along its edges, is the reader's model.
+    allOf:
+      - $ref: "#/definitions/table"
+      - properties:
+          headers:
+            items:
+              - const: name
+                description: >
+                  Unique name of the face.
+              - const: wing
+                description: >
+                  The wing whose canopy the face belongs to.
+              - const: points
+                description: >
+                  The face's three or four corners, in order around it.
+            minItems: 3
+          units:
+            items:
+              - const: "-"
+              - const: "-"
+              - const: "-"
+            minItems: 3
+          data:
+            items:
+              type: array
+              items:
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/face_corners"
+              minItems: 3
+
+  # --------------------------------------------------------------------------
+  # RIGID BODIES AND THE TUBES BETWEEN THEM
+  # --------------------------------------------------------------------------
+  bodies:
+    description: >
+      Rigid bodies. A body's KA frame is
+      oriented as docs/source/conventions.rst defines `_KA` where the body has
+      wing geometry, and as its writer likes where it has no leading edge.
+    allOf:
+      - $ref: "#/definitions/table"
+      - properties:
+          headers:
+            items:
+              - const: name
+                description: >
+                  Unique name of the body.
+              - const: pos_ENU
+                description: >
+                  The body's origin, the centre of its own mass, in the world.
+              - const: Q_KA2ENU
+                description: >
+                  Rotation from the body's KA frame into the world.
+            minItems: 3
+          units:
+            items:
+              - const: "-"
+              - const: m
+              - const: "-"
+            minItems: 3
+          data:
+            items:
+              type: array
+              items:
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/vec3"
+                - $ref: "#/definitions/quaternion"
+              minItems: 3
+    optionalColumns:
+      extra_mass:
+        description: >
+          Mass the body carries beyond the points fixed to it.
+        unit: kg
+        value:
+          $ref: "#/definitions/non_negative"
+      extra_inertia_KA:
+        description: >
+          Inertia tensor of `extra_mass` about the body's origin, in its KA axes.
+          Principal moments are the case where the KA axes are the principal axes
+          and the tensor is diagonal.
+        unit: kg*m^2
+        value:
+          $ref: "#/definitions/matrix3"
+
+  tubes:
+    description: >
+      Inflated beam elements between two bodies, whose positions fix the
+      element's ends and so its rest length. How it curves between those ends
+      belongs to the element: only a shape its material's law cannot hold, or a
+      taper, is a chain of tubes.
+    allOf:
+      - $ref: "#/definitions/table"
+      - properties:
+          headers:
+            items:
+              - const: name
+                description: >
+                  Unique name of the tube.
+              - const: bodies
+                description: >
+                  The two bodies whose positions fix the tube's ends.
+            minItems: 2
+          units:
+            items:
+              - const: "-"
+              - const: "-"
+            minItems: 2
+          data:
+            items:
+              type: array
+              items:
+                - $ref: "#/definitions/component_name"
+                - $ref: "#/definitions/name_pair"
+              minItems: 2
+    optionalColumns:
+      diameter:
+        description: >
+          Diameter, one for the whole element.
+        unit: m
+        value:
+          $ref: "#/definitions/length"
+      pressure:
+        description: >
+          Inflation pressure.
+        unit: Pa
+        value:
+          $ref: "#/definitions/non_negative"
+      material:
+        description: >
+          The material the element's rigidities are derived from, at its
+          diameter and pressure.
+        unit: "-"
+        value:
+          $ref: "#/definitions/component_name"
+
+additionalProperties: true
+
+definitions:
+  # ============================================================================
+  # TABLES
+  # ============================================================================
+  table:
+    description: >
+      A headers/units/data block. Each block fixes the columns it requires as
+      the leading headers, with their units, and leaves the rest open, so a
+      writer may append columns and an older reader still finds what it
+      addresses by name. A column under a header the block's
+      `optionalColumns` names has that unit and those values wherever it
+      stands. Every header is a distinct string and every unit a non-empty
+      one, and the units and every row are exactly as long as the headers.
+      awesio.validator enforces `rowsMatchHeaders` and `optionalColumns`,
+      which other draft-07 validators skip. docs/source/conventions.rst gives
+      each unit's spelling.
+    type: object
+    required:
+      - headers
+      - units
+      - data
+    properties:
+      headers:
+        type: array
+        items:
+          type: string
+        uniqueItems: true
+      units:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      data:
+        type: array
+        items:
+          type: array
+    rowsMatchHeaders: true
+    additionalProperties: false
+
+  # ============================================================================
+  # REFERENCES
+  # ============================================================================
+  component_name:
+    description: >
+      Name of a component in this document. Names are unique within their own
+      block and are how every other block refers to it.
+    type: string
+    minLength: 1
+
+  optional_name:
+    description: A component name, or null where the component has no such link.
+    oneOf:
+      - $ref: "#/definitions/component_name"
+      - type: "null"
+
+  name_pair:
+    description: The two distinct components an element connects, as a two-element tuple.
+    type: array
+    items:
+      $ref: "#/definitions/component_name"
+    minItems: 2
+    maxItems: 2
+    uniqueItems: true
+
+  face_corners:
+    description: >
+      The three or four distinct point names at a face's corners, in order around it.
+    type: array
+    items:
+      $ref: "#/definitions/component_name"
+    minItems: 3
+    maxItems: 4
+    uniqueItems: true
+
+  name_list:
+    description: Ordered component names, as referenced from another block.
+    type: array
+    items:
+      $ref: "#/definitions/component_name"
+
+  # ============================================================================
+  # QUANTITIES
+  # ============================================================================
+  vec3:
+    description: >
+      A three-component vector in the frame its column's suffix names and the
+      unit its column states.
+    type: array
+    items:
+      type: number
+    minItems: 3
+    maxItems: 3
+
+  matrix3:
+    description: >
+      A 3×3 matrix as three rows, in the axes its column's suffix names and the
+      unit its column states.
+    type: array
+    items:
+      $ref: "#/definitions/vec3"
+    minItems: 3
+    maxItems: 3
+
+  quaternion:
+    description: A rotation, named and written as docs/source/conventions.rst defines.
+    type: array
+    items:
+      type: number
+    minItems: 4
+    maxItems: 4
+
+  length:
+    type: number
+    minimum: 0
+
+  non_negative:
+    type: number
+    minimum: 0
+
+  # ============================================================================
+  # STIFFNESS LAWS
+  # ============================================================================
+  linear_parameters:
+    description: >
+      `linear`: a line of cross-section A = π·diameter²/4 carries the axial force
+      youngs_modulus·A·ε at strain ε = (length − rest_length)/rest_length.
+    type: object
+    required:
+      - density
+      - youngs_modulus
+    properties:
+      density:
+        description: Mass per volume of the line [kg/m^3].
+        type: number
+        minimum: 0
+      youngs_modulus:
+        description: Young's modulus of the line [Pa].
+        type: number
+        minimum: 0
+    additionalProperties: false
+
+  membrane_parameters:
+    description: >
+      `membrane`: a fabric carries, per unit width, the in-plane force
+      membrane_stiffness·ε at strain ε.
+    type: object
+    required:
+      - areal_density
+      - membrane_stiffness
+    properties:
+      areal_density:
+        description: Mass per area of the fabric [kg/m^2].
+        type: number
+        minimum: 0
+      membrane_stiffness:
+        description: Young's modulus times thickness, E·t [N/m].
+        type: number
+        minimum: 0
+    additionalProperties: false
+
+  breukels2011_parameters:
+    description: >
+      `breukels2011`: the correlations Breukels (2011, TU Delft PhD thesis) fitted
+      for an inflated tube as a 1 m cantilever. C1…C19 are fitted for the radius
+      r = diameter/2 in m and the pressure p in bar, so a reader divides the
+      tube's pressure [Pa] by 1e5. Loaded at its tip, it deflects δ [m] under the
+      force F·(1 − exp(−(S/F)·δ)) [N], with F = (C1·r + C2)·p² + C3·r³ + C4 and
+      S = (C5·r⁵ + C6)·p + C7·r + C8, until it collapses at
+      δ = (C9·r⁴ + C10)·p + C11·r² + C12. Twisted at rate κ [1/m], it carries
+      the moment c1·atan(c2·κ) [N·m], with c1 = (C13·r + C14)·p + C15·r + C16 and
+      c2 = C17·r⁴·ln(p) + C18·r³ + C19. How a reader derives its element's
+      rigidities from these curves is its own model.
+    type: object
+    required: [C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15,
+               C16, C17, C18, C19]
+    additionalProperties:
+      type: number
+    propertyNames:
+      pattern: '^C([1-9]|1[0-9])$'

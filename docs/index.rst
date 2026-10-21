@@ -16,8 +16,8 @@ unambiguous way. By using a common data format, awesIO allows independently deve
 models to exchange data without tool-specific manual conversion.
 
 .. note::
-   All quantities in awesIO are expressed in **SI units** throughout all schemas
-   and example files.
+   Every awesIO file is in **SI units**. That rule and the others every file follows
+   are in :doc:`source/conventions`.
 
 .. note::
    awesIO is inspired by and follows the architecture of
@@ -91,6 +91,7 @@ workflow.
    :caption: Schema Reference
 
    source/system_schema
+   source/structure_schema
    source/wind_resource_schema
    source/power_curves_schema
    source/operational_constraints_schema
@@ -99,6 +100,7 @@ workflow.
    :maxdepth: 2
    :caption: Development
 
+   source/conventions
    source/developer_guide
    source/changelog
 

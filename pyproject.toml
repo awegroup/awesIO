@@ -36,3 +36,6 @@ include = ["awesio*"]
 
 [tool.setuptools.package-data]
 awesio = ["schemas/*.yml"]
+
+[tool.pytest.ini_options]
+addopts = "-x"

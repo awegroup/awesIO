@@ -40,6 +40,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.intersphinx",
     "sphinx-jsonschema",
+    "schema_columns",
 ]
 
 try:
