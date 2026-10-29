@@ -128,6 +128,25 @@ per unit area, belong to its material. Like a tube, a face names what it is rath
 than how it is modelled: a reader carries its load as a membrane or as springs along
 its edges.
 
+Flat tapes, actuated lines and the control unit
+-----------------------------------------------
+
+A soft kite's depower and steering lines are flat webbing, not round cable. Their
+``diameter`` stays the one of the circle of the same area, which is what their mass
+and axial stiffness need, and the optional ``tape_width`` gives the width that sets
+their drag; a round line leaves it null.
+
+The optional ``actuator`` column names the control input that sets a segment's
+length in flight -- ``depower``, ``steering`` -- and is null for a line of fixed
+length. It says which lines move, never how far: the actuated length is live state.
+A ``wings`` row's optional ``control_unit`` names the point the wing's control unit
+is lumped at, which is where those lines are reeled from.
+
+A ``membrane`` material may state its ``poisson_ratio``, for a reader that carries
+the fabric as an isotropic plane-stress membrane, and its ``thickness``, for one that
+needs the modulus and the thickness apart. Whether the fabric wrinkles, and how a
+slack fabric is regularised, stays the reader's model.
+
 Bodies, and the tubes between them
 ----------------------------------
 

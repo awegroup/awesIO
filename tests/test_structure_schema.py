@@ -385,3 +385,39 @@ def test_a_reader_accepts_columns_appended_by_a_later_minor_version(structure):
     """Blocks are addressed by header, so appended columns must not break v1.0."""
     append_column(structure["segments"], "damping_per_stiffness", 0.002, unit="s")
     assert_valid(structure)
+
+
+def mark_tapes_and_control_unit(structure, width=0.012, actuator="depower", unit="kcu"):
+    """Give the first segment a flat-tape width and an actuator, the wing its control unit."""
+    append_column(structure["segments"], "tape_width", None, unit="m")
+    append_column(structure["segments"], "actuator", None, unit="-")
+    structure["segments"]["data"][0][-2:] = [width, actuator]
+    append_column(structure["wings"], "control_unit", unit, unit="-")
+
+
+def test_tapes_actuators_and_the_control_unit_are_optional_columns(beam):
+    mark_tapes_and_control_unit(beam)
+    assert_valid(beam)
+    points = {row[0] for row in rows(beam, "points")}
+    assert beam["wings"]["data"][0][-1] in points
+
+
+@pytest.mark.parametrize(
+    "label, kwargs",
+    [
+        ("a negative tape width", {"width": -0.012}),
+        ("a numeric actuator", {"actuator": 3}),
+        ("a numeric control unit", {"unit": 0}),
+    ],
+)
+def test_malformed_tapes_and_control_units_are_rejected(beam, label, kwargs):
+    mark_tapes_and_control_unit(beam, **kwargs)
+    assert_invalid(beam)
+
+
+def test_a_membrane_may_state_its_poisson_ratio_and_thickness(beam):
+    membrane = next(row for row in rows(beam, "materials") if row[1] == "membrane")
+    membrane[2].update(poisson_ratio=0.3, thickness=1.232e-4)
+    assert_valid(beam)
+    membrane[2]["thickness"] = 0.0
+    assert_invalid(beam)
