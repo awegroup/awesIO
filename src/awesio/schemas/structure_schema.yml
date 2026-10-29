@@ -249,7 +249,9 @@ properties:
           $ref: "#/definitions/length"
       diameter:
         description: >
-          Diameter of the line, for its mass, drag and cross-section.
+          Diameter of the line, for its mass, drag and cross-section. For a
+          flat tape it is the diameter of the circle of the tape's
+          cross-sectional area, and its drag is taken from `tape_width`.
         unit: m
         value:
           $ref: "#/definitions/length"
@@ -259,6 +261,23 @@ properties:
         unit: "-"
         value:
           $ref: "#/definitions/component_name"
+      tape_width:
+        description: >
+          Width of a flat tape (webbing), which sets its drag; null for a round
+          line. Its `diameter` stays the area-equivalent one, for its mass and
+          cross-section.
+        unit: m
+        value:
+          $ref: "#/definitions/optional_length"
+      actuator:
+        description: >
+          The control input that sets the segment's length in flight, such as a
+          depower or a steering tape reeled by the control unit; null where the
+          length is fixed. Every segment naming one input is actuated by it;
+          how far, and in which sense, is live state.
+        unit: "-"
+        value:
+          $ref: "#/definitions/optional_name"
 
   spanwise_stations:
     description: >
@@ -446,6 +465,13 @@ properties:
                 - $ref: "#/definitions/quaternion"
               minItems: 3
     optionalColumns:
+      control_unit:
+        description: >
+          The point the wing's control unit is lumped at, where the actuated
+          segments are reeled from; null where the wing has none.
+        unit: "-"
+        value:
+          $ref: "#/definitions/optional_name"
       canopy_material:
         description: >
           The material every face of the wing's canopy is made of, or null where
@@ -710,6 +736,12 @@ definitions:
     type: number
     minimum: 0
 
+  optional_length:
+    description: A length, or null where the element has no such dimension.
+    oneOf:
+      - $ref: "#/definitions/length"
+      - type: "null"
+
   non_negative:
     type: number
     minimum: 0
@@ -739,7 +771,9 @@ definitions:
   membrane_parameters:
     description: >
       `membrane`: a fabric carries, per unit width, the in-plane force
-      membrane_stiffness·ε at strain ε.
+      membrane_stiffness·ε at strain ε (uniaxially; with `poisson_ratio`, as
+      an isotropic plane-stress membrane). Whether it wrinkles, and how a
+      slack fabric is regularised, is the reader's model.
     type: object
     required:
       - areal_density
@@ -753,6 +787,17 @@ definitions:
         description: Young's modulus times thickness, E·t [N/m].
         type: number
         minimum: 0
+      poisson_ratio:
+        description: >
+          In-plane Poisson's ratio of the fabric [-], for a reader that models
+          it as an isotropic membrane; absent, a reader takes its own default.
+        type: number
+      thickness:
+        description: >
+          Thickness of the fabric [m], which splits `membrane_stiffness` into a
+          modulus and a thickness for a reader that needs them apart.
+        type: number
+        exclusiveMinimum: 0
     additionalProperties: false
 
   breukels2011_parameters:
