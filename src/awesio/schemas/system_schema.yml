@@ -341,6 +341,67 @@ definitions:
             type: number
             minimum: 0
         additionalProperties: true
+      turbine:
+        $ref: "#/definitions/onboard_turbine"
+    additionalProperties: false
+
+  # ============================================================================
+  # ONBOARD TURBINE - Optional generator carried by the control system
+  # ============================================================================
+  onboard_turbine:
+    type: object
+    description: >
+      An onboard wind turbine that powers the control unit. No ``turbine`` block
+      means the control unit carries none. Its mass is its own: it is not part of
+      the control unit's ``structure.mass``, and a reader that lumps the two adds
+      them.
+    required:
+      - name
+      - type
+      - version
+      - structure
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+        enum: [horizontal_axis_turbine]
+      version:
+        type: [string, number]
+      structure:
+        type: object
+        required:
+          - rotor_diameter
+          - mass
+          - position_KA
+        properties:
+          rotor_diameter:
+            type: number
+            exclusiveMinimum: 0
+            description: Diameter of the swept disc [m].
+          number_of_blades:
+            type: integer
+            minimum: 1
+          mass:
+            type: number
+            minimum: 0
+            description: >
+              Mass of the turbine and its mount [kg], not included in the control
+              unit's ``structure.mass``.
+          rated_power:
+            type: number
+            minimum: 0
+            description: Rated electrical power [W].
+          position_KA:
+            type: array
+            items:
+              type: number
+            minItems: 3
+            maxItems: 3
+            description: >
+              Rotor hub centre in the kite's _KA frame [m], whose origin is the
+              control unit: +z above it, towards the wing, -z hanging below it.
+        additionalProperties: true
     additionalProperties: false
 
   # ============================================================================
