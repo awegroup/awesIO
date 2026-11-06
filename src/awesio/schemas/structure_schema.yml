@@ -409,6 +409,28 @@ properties:
         unit: m
         value:
           $ref: "#/definitions/length"
+      inertia:
+        description: >
+          Moment of inertia of the whole drivetrain as seen from the motor shaft:
+          motor, gearbox and drum, the drum's divided by the gear ratio squared.
+          At the tether it acts as the mass inertia * (gear_ratio / drum_radius)^2.
+        unit: kg*m^2
+        value:
+          $ref: "#/definitions/non_negative"
+      friction_coulomb:
+        description: >
+          Coulomb friction of the drivetrain, as the force at the tether that
+          opposes the reel speed whatever its magnitude.
+        unit: N
+        value:
+          $ref: "#/definitions/non_negative"
+      friction_viscous:
+        description: >
+          Viscous friction of the drivetrain, as the force at the tether per unit
+          reel speed.
+        unit: N*s/m
+        value:
+          $ref: "#/definitions/non_negative"
 
   wings:
     description: >
