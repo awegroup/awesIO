@@ -49,6 +49,8 @@ header, and spells each unit one way:
      - force
    * - ``N/m``
      - force per length, such as a membrane stiffness
+   * - ``N*s/m``
+     - force per speed, such as a viscous friction coefficient
    * - ``Pa``
      - pressure
    * - ``deg``

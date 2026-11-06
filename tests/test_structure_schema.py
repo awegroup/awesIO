@@ -277,6 +277,10 @@ def test_every_reference_resolves_to_a_named_row(structure):
          lambda d: d["winches"]["data"][0].pop()),
         ("a negative winch gear ratio",
          lambda d: d["winches"]["data"][0].__setitem__(3, -1.0)),
+        ("a negative winch inertia",
+         lambda d: append_column(d["winches"], "inertia", -0.2, unit="kg*m^2")),
+        ("a winch's viscous friction in the wrong unit",
+         lambda d: append_column(d["winches"], "friction_viscous", 30.6, unit="N/m")),
         ("missing connectivity_sha",
          lambda d: d["metadata"].pop("connectivity_sha")),
         ("truncated connectivity_sha",
@@ -384,4 +388,14 @@ def test_a_wing_may_have_no_canopy(structure):
 def test_a_reader_accepts_columns_appended_by_a_later_minor_version(structure):
     """Blocks are addressed by header, so appended columns must not break v1.0."""
     append_column(structure["segments"], "damping_per_stiffness", 0.002, unit="s")
+    assert_valid(structure)
+
+
+def test_a_winch_may_state_its_drivetrain(structure):
+    """Inertia (motor side) and the friction at the tether, as V3Kite flies the
+    TU Delft GS1 drivetrain (KiteUtils settings: inertia_total, f_coulomb, c_vf)."""
+    for header, value, unit in (("inertia", 0.204, "kg*m^2"),
+                                ("friction_coulomb", 122.0, "N"),
+                                ("friction_viscous", 30.6, "N*s/m")):
+        append_column(structure["winches"], header, value, unit=unit)
     assert_valid(structure)
